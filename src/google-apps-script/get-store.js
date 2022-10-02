@@ -14,7 +14,7 @@ function doGet(request){
         ['zh-tw']:data[1].toString(),
         ['en-us']:data[2].toString(),
       },
-      
+      ['discount']:data[3].toString(),
     })
   })
   let exportFormat = JSON.stringify(jsonFormated);
