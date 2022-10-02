@@ -10,8 +10,11 @@ function doGet(request){
     if(data[1]==""&&data[2]==""){return;};
     jsonFormated.push({
       ['id']:data[0].split('-'),
-      ['name-zh']:data[1].toString(),
-      ['name-en']:data[2].toString(),
+      ['name']:{
+        ['zh-tw']:data[1].toString(),
+        ['en-us']:data[2].toString(),
+      },
+      
     })
   })
   let exportFormat = JSON.stringify(jsonFormated);
