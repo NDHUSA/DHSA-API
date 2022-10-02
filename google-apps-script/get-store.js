@@ -9,7 +9,7 @@ function doGet(request){
     if(skipId==0){skipId+=1;return;};
     if(data[1]==""&&data[2]==""){return;};
     jsonFormated.push({
-      ['id']:data[0].split('-')[1],
+      ['id']:data[0].split('-'),
       ['name-zh']:data[1].toString(),
       ['name-en']:data[2].toString(),
     })
