@@ -71,6 +71,7 @@ jobs:
       - name: Google Auth
         id: auth
 <<<<<<< HEAD
+<<<<<<< HEAD
         uses: "google-github-actions/auth@v0"
         with:
           credentials_json: "${{ secrets.GCP_CREDENTIALS }}"
@@ -79,6 +80,11 @@ jobs:
         with:
           credentials_json: '${{ secrets.GCP_CREDENTIALS }}''
 >>>>>>> 7677cfb (feat(index):)
+=======
+        uses: "google-github-actions/auth@v0"
+        with:
+          credentials_json: "${{ secrets.GCP_CREDENTIALS }}"
+>>>>>>> 552b82c (fix(workflows/google-cloudrun-docker): fix branche)
 
       # BEGIN - Docker auth and build (NOTE: If you already have a container image, these Docker steps can be omitted)
 

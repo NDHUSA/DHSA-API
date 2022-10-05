@@ -13,10 +13,14 @@ const PORT = 8080;
 const app = express();
 app.get('/', (req, res) => {
 <<<<<<< HEAD
+<<<<<<< HEAD
   res.send('!!!!!Hello World!!!!');
 =======
   res.send('!Hello World!!');
 >>>>>>> 7677cfb (feat(index):)
+=======
+  res.send('!!!!Hello World!!!!');
+>>>>>>> 552b82c (fix(workflows/google-cloudrun-docker): fix branche)
 });
 
 app.get('/store', async (req, res) => {
