@@ -36,6 +36,6 @@ app.get('/store', async (req, res) => {
   
 })
 
-app.listen(PORT, () => {
-  // console.log(`Running on http://${HOST}:${PORT}`);
+app.listen(parseInt(process.env.PORT) || 8080, () => {
+  console.log(`Running on ${PORT}`);
 });
