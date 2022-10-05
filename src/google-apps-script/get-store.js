@@ -15,6 +15,8 @@ function doGet(request){
         ['zh-tw']: data[1].toString(),
         ['en-us']: data[2].toString(),
       },
+      ['type']: data[7].toString(),
+      ['thumb']: data[11].toString() || "https://dhsa.ndhu.edu.tw/var/file/110/1110/img/4397/vipcard2021_merchant_image.png",
       ['discount']: {
         ['start']: new Date(data[3]).getTime(),
         ['end']: new Date(data[4]).getTime(),
@@ -26,7 +28,7 @@ function doGet(request){
         ['address']: data[5].toString(),
         ['area']: data[6].toString(),
       },
-      ['type']: data[7].toString(),
+      
     })
   })
   let exportFormat = JSON.stringify(jsonFormated);
