@@ -46,7 +46,8 @@ name: Build and Deploy to Cloud Run
 
 on:
   push:
-    branches: [ "dev" ]
+    branches:
+      - dev
 
 env:
   PROJECT_ID: csc-vm # TODO: update Google Cloud project id
