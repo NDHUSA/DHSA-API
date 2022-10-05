@@ -17,15 +17,7 @@ app.get('/', (req, res) => {
 
 app.get('/store', async (req, res) => {
   const response = await fetch("https://script.google.com/macros/s/AKfycbxwfVUAaUmpj2Sh7ldxGknQwSHlGETEfUS0GvCgPfeTJ2g4IMLFz4DLfHnQqN5C0TNkVg/exec", {
-    method: "GET",
-    // // headers: {
-    // //   "Content-Type": "application/x-www-form-urlencoded",
-    // // },
-    // body: new URLSearchParams({
-    //   Rcg: 24,
-    //   Op: "getpartlist",
-    //   Page: 1,
-    // }),
+    method: "GET" 
   });
   res.writeHead(200, {
     "Content-Type": "application/json",
