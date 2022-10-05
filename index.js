@@ -12,7 +12,11 @@ const PORT = 8080;
 // App
 const app = express();
 app.get('/', (req, res) => {
+<<<<<<< HEAD
   res.send('!!!!!Hello World!!!!');
+=======
+  res.send('!Hello World!!');
+>>>>>>> 7677cfb (feat(index):)
 });
 
 app.get('/store', async (req, res) => {
