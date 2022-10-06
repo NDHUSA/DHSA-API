@@ -3,7 +3,7 @@ name: Fetch Store
 on:
   schedule:
     # Daily at 8:20 UTC
-    - cron: "*/10 * * *"
+    - cron: "*/10 * * * *"
   push:
     branches:
       - main
