@@ -12,7 +12,7 @@ const PORT = 8080;
 // App
 const app = express();
 app.get('/', (req, res) => {
-  res.status(200).json({success:'true'});
+  res.status(200).json({success:true});
 });
 
 app.get('/card/store', async (req, res) => {
