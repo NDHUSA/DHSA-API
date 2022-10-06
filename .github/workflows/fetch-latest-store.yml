@@ -1,9 +1,9 @@
-name: Fetch Store
+name: Fetch Store JSON form GAS
 
 on:
   schedule:
     # Daily at 8:20 UTC
-    - cron: "*/10 * * * *"
+    - cron: "*/15 * * * *"
   push:
     branches:
       - main
