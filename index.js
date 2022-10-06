@@ -16,7 +16,7 @@ app.get('/', (req, res) => {
 });
 
 app.get('/card/store', async (req, res) => {
-  const response = await fetch("https://github.com/yc97463/DHSA-API/raw/main/dist/store.json", {
+  const response = await fetch("https://yc97463.github.io/DHSA-API/store.json", {
     method: "GET" 
   });
   res.writeHead(200, {
