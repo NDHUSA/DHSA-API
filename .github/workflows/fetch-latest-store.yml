@@ -17,26 +17,19 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@master
-      # - name: Setup node
-      #   uses: actions/setup-node@master
-      #   with:
-      #     node-versionL 16
-      #     cache: npm
-      # - name: Install
-      #   run: npm ci
       - name: Setup python3
         uses: actions/setup-python@v3
         with:
           python-version: "3"
-      - name: Install python packages
+      - name: Install Python packages
         run: |
           pip install --upgrade pip
-          pip install requests requests_html lxml html5lib beautifulsoup4
+          pip install requests requests_html
       - name: Run Script
         run: python src/py-crawler/fetch-store.py > dist/store.json
       - name: Commit files
         run: |
-          git config user.email "git@imych.one"
+          git config user.email "hi+git@imych.one"
           git config user.name "Github Action"
           git add -A
           git commit -m "update announcement" -a
