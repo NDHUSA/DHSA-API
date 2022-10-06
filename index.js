@@ -15,7 +15,7 @@ app.get('/', (req, res) => {
   res.send('!!!!Hello World!!!!');
 });
 
-app.get('/store', async (req, res) => {
+app.get('/card/store', async (req, res) => {
   const response = await fetch("https://script.google.com/macros/s/AKfycbxwfVUAaUmpj2Sh7ldxGknQwSHlGETEfUS0GvCgPfeTJ2g4IMLFz4DLfHnQqN5C0TNkVg/exec", {
     method: "GET" 
   });
@@ -27,6 +27,7 @@ app.get('/store', async (req, res) => {
   res.end();
   
 })
+
 
 app.listen(parseInt(process.env.PORT) || 8080, () => {
   console.log(`Running on ${PORT}`);
