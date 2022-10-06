@@ -16,5 +16,5 @@ steps:
       - "gcr.io/$PROJECT_ID/SERVICE-NAME:$COMMIT_SHA"
       - "--region"
       - "REGION"
-    images:
-      - "gcr.io/$PROJECT_ID/SERVICE-NAME:$COMMIT_SHA"
+images:
+  - "gcr.io/$PROJECT_ID/SERVICE-NAME:$COMMIT_SHA"
