@@ -28,6 +28,11 @@ app.get('/card/store', async (req, res) => {
   
 })
 
+app.get('/webhook/lineOA', async (req, res) => {
+  res.writeHead(200).json({success:true});
+  res.end();
+})
+
 
 app.listen(parseInt(process.env.PORT) || 8080, () => {
   console.log(`Running on ${PORT}`);
