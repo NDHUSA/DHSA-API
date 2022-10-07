@@ -28,8 +28,13 @@ app.get('/card/store', async (req, res) => {
   
 })
 
+<<<<<<< HEAD
 app.post('/webhook/lineOA', async (req, res) => {
   res.status(200).json({success:true});
+=======
+app.get('/webhook/lineOA', async (req, res) => {
+  res.writeHead(200).json({success:true});
+>>>>>>> 53b9e53 (feat(/webhook/lineOA): add 200 reponse)
   res.end();
 })
 
