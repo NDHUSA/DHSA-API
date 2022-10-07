@@ -29,7 +29,7 @@ app.get('/card/store', async (req, res) => {
 })
 
 app.get('/webhook/lineOA', async (req, res) => {
-  res.writeHead(200).json({success:true});
+  res.status(200).json({success:true});
   res.end();
 })
 
