@@ -13,7 +13,7 @@
         ['semester']: parseInt(data[0].split('-')[1]),
         ['name']: {
           ['zh-tw']: data[1].toString(),
-          ['en-us']: data[2].toString(),
+          ['en']: data[2].toString(),
         },
         ['type']: data[7].toString(),
         ['thumb']: data[11].toString() || "https://dhsa.ndhu.edu.tw/var/file/110/1110/img/4397/vipcard2021_merchant_image.png",
