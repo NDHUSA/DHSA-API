@@ -2,8 +2,8 @@ name: Fetch Store JSON form GAS
 
 on:
   schedule:
-    # Every 12 hours
-    - cron: "* */12 * * *"
+    # Every 8 hours
+    - cron: "* */8 * * *"
   push:
     branches:
       - main
@@ -29,8 +29,8 @@ jobs:
         run: python src/py-crawler/fetch-store.py > dist/store.json
       - name: Commit files
         run: |
-          git config user.email "hi+git@imych.one"
-          git config user.name "Github Action"
+          git config user.email "hi@imych.one"
+          git config user.name "yc97463"
           git add -A
           git commit -m "Fetch latest JSON from GAS API" -a
           git push
