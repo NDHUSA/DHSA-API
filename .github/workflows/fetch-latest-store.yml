@@ -31,6 +31,7 @@ jobs:
         continue-on-error: true
         run: |
           git config user.email "hi@imych.one"
+          git config user.name "yc97463"
           git add -A
           git commit -m "Fetch latest JSON from GAS API" -a
           git push
@@ -40,6 +41,7 @@ jobs:
         with:
           github_token: ${{ secrets.PUSH_GIT_TOKEN }}
   Deploy:
+    needs: [FetchCurrent]
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
