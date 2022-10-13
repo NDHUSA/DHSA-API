@@ -1,1 +1,2 @@
- requests requests_html
+requests
+requests_html
