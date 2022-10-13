@@ -12,7 +12,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  fetch-json:
+  FetchCurrent:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -24,13 +24,18 @@ jobs:
       - name: Install Python packages
         run: |
           pip install --upgrade pip
-          pip install requests requests_html
-      - name: Run Script
-        run: python src/py-crawler/fetch-store.py > dist/store.json
+          pip install -r src/py-crawler/requirments.txt
+      - name: Run Python Script
+        run: python3 src/py-crawler/fetch-store.py > dist/store.json
       - name: Commit files
+        continue-on-error: true
         run: |
           git config user.email "hi@imych.one"
-          git config user.name "yc97463"
           git add -A
           git commit -m "Fetch latest JSON from GAS API" -a
           git push
+      - name: Push Changes
+        if: success()
+        uses: ad-m/github-push-action@master
+        with:
+          github_token: ${{ secrets.MY_GIT_TOKEN }}
