@@ -71,6 +71,7 @@ app.get('/lineNotify/connect',async (req, res) => {
   }
 })
 
+<<<<<<< HEAD
 const LN_UserToken = process.env.lineNotify_TesterToken;
 app.post('/lineNotify/notify',async (req, res) => {
   const { submitToken, content } = req.body;
@@ -102,6 +103,31 @@ app.post('/lineNotify/notify',async (req, res) => {
     res.write(JSON.stringify(await response.json()));
     res.end();
   }
+=======
+app.post('/lineNotify/notify',async (req, res) => {
+  const response = await fetch(lineNotifyAPIHost+"/notify", {
+    method: "POST",
+    headers: {
+      "Authorization": "Bearer "+LN_Usertoken,
+      "Content-Type": "application/x-www-form-urlencoded"
+    },
+    body: new URLSearchParams({
+      message: `早安！
+晚安大家`,
+      imageThumbnail: "https://miro.medium.com/max/1400/1*cYbw3hyi3dDG7aFy_-wdUg.png",
+      imageFullsize: "https://miro.medium.com/max/1400/1*cYbw3hyi3dDG7aFy_-wdUg.png",
+      stickerPackageId: 8522,
+      stickerId: 16581267
+    }),
+  });
+  
+  res.writeHead(200, {
+    "Content-Type": "application/json",
+    "Access-Control-Allow-Origin": "*",
+  });
+  res.write(JSON.stringify(await response.json()));
+  res.end();
+>>>>>>> c24ac12 (feat(index/lineNotify/notify): API for send notify msg with test data)
 })
 
 app.post('/lineNotify/status', async (req, res) => {
