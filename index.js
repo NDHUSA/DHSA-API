@@ -1,8 +1,9 @@
 'use strict';
 
 import fetch from 'node-fetch';
-import express from 'express';
-// const fetch = require('node-fetch');
+import express, { response } from 'express';
+import * as dotenv from 'dotenv';
+dotenv.config();
 
 
 // Constants
@@ -13,7 +14,10 @@ const PORT = 8080;
 const app = express();
 app.get('/', (req, res) => {
   res.status(200).json({success:true});
+  res.end();
 });
+
+// Card
 
 app.get('/card/store', async (req, res) => {
   const response = await fetch("https://yc97463.github.io/DHSA-API/store.json", {
@@ -28,8 +32,23 @@ app.get('/card/store', async (req, res) => {
   
 })
 
-app.post('/webhook/lineOA', async (req, res) => {
+// Webhook
+
+app.post('/webhook/lineMessaging', async (req, res) => {
   res.status(200).json({success:true});
+  res.end();
+})
+
+// Callback
+
+app.get('/callback/lineLogin', (req, res) => {
+  res.status(200).json({success:true});
+  res.end();
+})
+
+app.get('/callback/lineNotify', (req, res) => {
+  res.status(200).json({success:true});
+  // process.env.lineNotify_ClientID
   res.end();
 })
 
