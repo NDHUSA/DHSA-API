@@ -67,7 +67,11 @@ app.get('/lineNotify/connect',async (req, res) => {
   }
 })
 
+const LN_Usertoken = process.env.lineNotify_TestToken;
 app.post('/lineNotify/notify',async (req, res) => {
+  const userName = await fetch(process.env.HOST+"/lineNotify/status", {
+    method: "POST"
+  }).then(userName => userName.json());
   const response = await fetch(lineNotifyAPIHost+"/notify", {
     method: "POST",
     headers: {
@@ -75,7 +79,7 @@ app.post('/lineNotify/notify',async (req, res) => {
       "Content-Type": "application/x-www-form-urlencoded"
     },
     body: new URLSearchParams({
-      message: `早安！
+      message: await userName.target+`早安！
 晚安大家`,
       imageThumbnail: "https://miro.medium.com/max/1400/1*cYbw3hyi3dDG7aFy_-wdUg.png",
       imageFullsize: "https://miro.medium.com/max/1400/1*cYbw3hyi3dDG7aFy_-wdUg.png",
