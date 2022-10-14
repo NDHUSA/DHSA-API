@@ -4,6 +4,7 @@ import fetch from 'node-fetch';
 import express, { response } from 'express';
 import * as dotenv from 'dotenv';
 dotenv.config();
+import url from 'url';
 
 
 // Constants
@@ -30,6 +31,40 @@ app.get('/card/store', async (req, res) => {
   res.write(JSON.stringify(await response.json()));
   res.end();
   
+})
+
+// LINE Notify
+
+const lineNotifyOAuthHost = "https://notify-bot.line.me/oauth";
+const lineNotifyAPIHost = "https://notify-api.line.me/api";
+
+app.get('/lineNotify/connect',async (req, res) => {
+  const queryObject = url.parse(req.url, true).query;
+  const code = queryObject.code;
+  const state = queryObject.state;
+  if(!code){
+    res.status(200).json({return:lineNotifyOAuthHost+"/authorize?client_id="+process.env.lineNotify_ClientID+"&redirect_uri="+process.env.lineNotify_CallbackURi+"&scope=notify&state=asdf&response_type=code"})
+  }else{
+    const response = await fetch(lineNotifyOAuthHost+"/token", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded"
+      },
+      body: new URLSearchParams({
+        grant_type: "authorization_code",
+        code: code,
+        redirect_uri: process.env.lineNotify_CallbackURi,
+        client_id: process.env.lineNotify_ClientID,
+        client_secret: process.env.lineNotify_ClientSecret,
+      }),
+    });
+    res.writeHead(200, {
+      "Content-Type": "application/json",
+      "Access-Control-Allow-Origin": "*",
+    });
+    res.write(JSON.stringify(await response.json()));
+    res.end();
+  }
 })
 
 // Webhook
