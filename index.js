@@ -67,6 +67,31 @@ app.get('/lineNotify/connect',async (req, res) => {
   }
 })
 
+app.post('/lineNotify/notify',async (req, res) => {
+  const response = await fetch(lineNotifyAPIHost+"/notify", {
+    method: "POST",
+    headers: {
+      "Authorization": "Bearer "+LN_Usertoken,
+      "Content-Type": "application/x-www-form-urlencoded"
+    },
+    body: new URLSearchParams({
+      message: `早安！
+晚安大家`,
+      imageThumbnail: "https://miro.medium.com/max/1400/1*cYbw3hyi3dDG7aFy_-wdUg.png",
+      imageFullsize: "https://miro.medium.com/max/1400/1*cYbw3hyi3dDG7aFy_-wdUg.png",
+      stickerPackageId: 8522,
+      stickerId: 16581267
+    }),
+  });
+  
+  res.writeHead(200, {
+    "Content-Type": "application/json",
+    "Access-Control-Allow-Origin": "*",
+  });
+  res.write(JSON.stringify(await response.json()));
+  res.end();
+})
+
 app.post('/lineNotify/status', async (req, res) => {
   const response = await fetch(lineNotifyAPIHost+"/status", {
     method: "GET",
