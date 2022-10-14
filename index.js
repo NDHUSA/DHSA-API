@@ -140,6 +140,19 @@ app.get('/callback/lineNotify', (req, res) => {
   res.end();
 })
 
+// Callback
+
+app.get('/callback/lineLogin', (req, res) => {
+  res.status(200).json({status: "success"});
+  res.end();
+})
+
+app.get('/callback/lineNotify', (req, res) => {
+  res.status(200).json({status: "success"});
+  // process.env.lineNotify_ClientID
+  res.end();
+})
+
 
 app.listen(parseInt(process.env.PORT) || 8080, () => {
   console.log(`Running on ${PORT}`);
