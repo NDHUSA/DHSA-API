@@ -67,6 +67,22 @@ app.get('/lineNotify/connect',async (req, res) => {
   }
 })
 
+app.post('/lineNotify/status', async (req, res) => {
+  const response = await fetch(lineNotifyAPIHost+"/status", {
+    method: "GET",
+    headers: {
+      "Authorization": "Bearer "+LN_Usertoken,
+      "Content-Type": "application/x-www-form-urlencoded"
+    }
+  });
+  res.writeHead(200, {
+    "Content-Type": "application/json",
+    "Access-Control-Allow-Origin": "*",
+  });
+  res.write(JSON.stringify(await response.json()));
+  res.end();
+})
+
 // Webhook
 
 app.post('/webhook/lineMessaging', async (req, res) => {
