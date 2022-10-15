@@ -6,6 +6,7 @@ import * as dotenv from 'dotenv';
 dotenv.config();
 import url from 'url';
 
+
 // Constants
 const PORT = 8080;
 // const HOST = '0.0.0.0';
@@ -71,7 +72,6 @@ app.get('/lineNotify/connect',async (req, res) => {
   }
 })
 
-<<<<<<< HEAD
 const LN_UserToken = process.env.lineNotify_TesterToken;
 app.post('/lineNotify/notify',async (req, res) => {
   const { submitToken, content } = req.body;
@@ -103,7 +103,6 @@ app.post('/lineNotify/notify',async (req, res) => {
     res.write(JSON.stringify(await response.json()));
     res.end();
   }
-=======
 app.post('/lineNotify/notify',async (req, res) => {
   const userName = await fetch(process.env.HOST+"/lineNotify/status", {
     method: "POST"
@@ -130,7 +129,6 @@ app.post('/lineNotify/notify',async (req, res) => {
   });
   res.write(JSON.stringify(await response.json()));
   res.end();
->>>>>>> c24ac12 (feat(index/lineNotify/notify): API for send notify msg with test data)
 })
 
 app.post('/lineNotify/status', async (req, res) => {
