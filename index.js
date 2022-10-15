@@ -6,13 +6,17 @@ import * as dotenv from 'dotenv';
 dotenv.config();
 import url from 'url';
 
-
 // Constants
 const PORT = 8080;
 // const HOST = '0.0.0.0';
 
 // App
 const app = express();
+
+// Global
+app.use(express.json());
+
+// Index
 app.get('/', (req, res) => {
   res.status(200).json({success:true});
   res.end();
@@ -69,31 +73,36 @@ app.get('/lineNotify/connect',async (req, res) => {
 
 const LN_Usertoken = process.env.lineNotify_TestToken;
 app.post('/lineNotify/notify',async (req, res) => {
-  const userName = await fetch(process.env.HOST+"/lineNotify/status", {
-    method: "POST"
-  }).then(userName => userName.json());
-  const response = await fetch(lineNotifyAPIHost+"/notify", {
-    method: "POST",
-    headers: {
-      "Authorization": "Bearer "+LN_Usertoken,
-      "Content-Type": "application/x-www-form-urlencoded"
-    },
-    body: new URLSearchParams({
-      message: await userName.target+`早安！
-晚安大家`,
-      imageThumbnail: "https://miro.medium.com/max/1400/1*cYbw3hyi3dDG7aFy_-wdUg.png",
-      imageFullsize: "https://miro.medium.com/max/1400/1*cYbw3hyi3dDG7aFy_-wdUg.png",
-      stickerPackageId: 8522,
-      stickerId: 16581267
-    }),
-  });
-  
-  res.writeHead(200, {
-    "Content-Type": "application/json",
-    "Access-Control-Allow-Origin": "*",
-  });
-  res.write(JSON.stringify(await response.json()));
-  res.end();
+  const { submitToken } = req.body;
+  if(submitToken!=process.env.lineNotify_formSubmitToken){
+    res.status(401).json({status: "Invalid token"});
+    res.end();
+  }else{
+    const userName = await fetch(process.env.HOST+"/lineNotify/status", {
+      method: "POST"
+    }).then(userName => userName.json());
+    const response = await fetch(lineNotifyAPIHost+"/notify", {
+      method: "POST",
+      headers: {
+        "Authorization": "Bearer "+LN_Usertoken,
+        "Content-Type": "application/x-www-form-urlencoded"
+      },
+      body: new URLSearchParams({
+        message: await userName.target+`早安！
+  晚安大家`,
+        imageThumbnail: "https://miro.medium.com/max/1400/1*cYbw3hyi3dDG7aFy_-wdUg.png",
+        imageFullsize: "https://miro.medium.com/max/1400/1*cYbw3hyi3dDG7aFy_-wdUg.png",
+        stickerPackageId: 8522,
+        stickerId: 16581267
+      }),
+    });
+    res.writeHead(200, {
+      "Content-Type": "application/json",
+      "Access-Control-Allow-Origin": "*",
+    });
+    res.write(JSON.stringify(await response.json()));
+    res.end();
+  }
 })
 
 app.post('/lineNotify/status', async (req, res) => {
