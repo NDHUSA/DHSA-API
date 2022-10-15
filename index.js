@@ -73,7 +73,7 @@ app.get('/lineNotify/connect',async (req, res) => {
 
 const LN_Usertoken = process.env.lineNotify_TestToken;
 app.post('/lineNotify/notify',async (req, res) => {
-  const { submitToken } = req.body;
+  const { submitToken, content } = req.body;
   if(submitToken!=process.env.lineNotify_sendToken){
     res.status(401).json({status: "Invalid token"});
     res.end();
@@ -88,8 +88,7 @@ app.post('/lineNotify/notify',async (req, res) => {
         "Content-Type": "application/x-www-form-urlencoded"
       },
       body: new URLSearchParams({
-        message: await userName.target+`早安！
-  晚安大家`,
+        message: await userName.target+`早安！\n${content}`,
         imageThumbnail: "https://miro.medium.com/max/1400/1*cYbw3hyi3dDG7aFy_-wdUg.png",
         imageFullsize: "https://miro.medium.com/max/1400/1*cYbw3hyi3dDG7aFy_-wdUg.png",
         stickerPackageId: 8522,
