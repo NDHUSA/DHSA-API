@@ -183,12 +183,12 @@ app.get('/callback/lineNotify', (req, res) => {
 // Callback
 
 app.get('/callback/lineLogin', (req, res) => {
-  res.status(200).json({success:true});
+  res.status(200).json({status: "success"});
   res.end();
 })
 
 app.get('/callback/lineNotify', (req, res) => {
-  res.status(200).json({success:true});
+  res.status(200).json({status: "success"});
   // process.env.lineNotify_ClientID
   res.end();
 })
