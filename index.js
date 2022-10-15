@@ -74,7 +74,11 @@ app.get('/lineNotify/connect',async (req, res) => {
 
 const LN_UserToken = process.env.lineNotify_TesterToken;
 app.post('/lineNotify/notify',async (req, res) => {
+<<<<<<< HEAD
   const { submitToken, content } = req.body;
+=======
+  const { submitToken } = req.body;
+>>>>>>> 644e613 (feat(env): add lineNotify_sendToken)
   if(submitToken!=process.env.lineNotify_sendToken){
     res.status(401).json({status: "Invalid token"});
     res.end();
