@@ -18,7 +18,7 @@ app.use(express.json());
 
 // Index
 app.get('/', (req, res) => {
-  res.status(200).json({success:true});
+  res.status(200).json({status: "success"});
   res.end();
 });
 
@@ -124,19 +124,19 @@ app.post('/lineNotify/status', async (req, res) => {
 // Webhook
 
 app.post('/webhook/lineMessaging', async (req, res) => {
-  res.status(200).json({success:true});
+  res.status(200).json({status: "success"});
   res.end();
 })
 
 // Callback
 
 app.get('/callback/lineLogin', (req, res) => {
-  res.status(200).json({success:true});
+  res.status(200).json({status: "success"});
   res.end();
 })
 
 app.get('/callback/lineNotify', (req, res) => {
-  res.status(200).json({success:true});
+  res.status(200).json({status: "success"});
   // process.env.lineNotify_ClientID
   res.end();
 })
