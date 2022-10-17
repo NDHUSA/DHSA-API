@@ -71,7 +71,7 @@ app.get('/lineNotify/connect',async (req, res) => {
   }
 })
 
-const LN_Usertoken = process.env.lineNotify_TestToken;
+const LN_UserToken = process.env.lineNotify_TesterToken;
 app.post('/lineNotify/notify',async (req, res) => {
   const { submitToken, content } = req.body;
   if(submitToken!=process.env.lineNotify_sendToken){
@@ -84,7 +84,7 @@ app.post('/lineNotify/notify',async (req, res) => {
     const response = await fetch(lineNotifyAPIHost+"/notify", {
       method: "POST",
       headers: {
-        "Authorization": "Bearer "+LN_Usertoken,
+        "Authorization": "Bearer "+LN_UserToken,
         "Content-Type": "application/x-www-form-urlencoded"
       },
       body: new URLSearchParams({
@@ -108,7 +108,7 @@ app.post('/lineNotify/status', async (req, res) => {
   const response = await fetch(lineNotifyAPIHost+"/status", {
     method: "GET",
     headers: {
-      "Authorization": "Bearer "+LN_Usertoken,
+      "Authorization": "Bearer "+LN_UserToken,
       "Content-Type": "application/x-www-form-urlencoded"
     }
   });
