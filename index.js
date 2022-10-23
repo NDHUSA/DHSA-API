@@ -7,7 +7,6 @@ import cors from 'cors';
 dotenv.config();
 import url from 'url';
 
-
 // Constants
 const PORT = 8080;
 // const HOST = '0.0.0.0';
@@ -87,32 +86,6 @@ app.post('/lineNotify/notify',async (req, res) => {
     });
     res.status(200).json(await response.json());
   }
-app.post('/lineNotify/notify',async (req, res) => {
-  const userName = await fetch(process.env.HOST+"/lineNotify/status", {
-    method: "POST"
-  }).then(userName => userName.json());
-  const response = await fetch(lineNotifyAPIHost+"/notify", {
-    method: "POST",
-    headers: {
-      "Authorization": "Bearer "+LN_Usertoken,
-      "Content-Type": "application/x-www-form-urlencoded"
-    },
-    body: new URLSearchParams({
-      message: await userName.target+`早安！
-晚安大家`,
-      imageThumbnail: "https://miro.medium.com/max/1400/1*cYbw3hyi3dDG7aFy_-wdUg.png",
-      imageFullsize: "https://miro.medium.com/max/1400/1*cYbw3hyi3dDG7aFy_-wdUg.png",
-      stickerPackageId: 8522,
-      stickerId: 16581267
-    }),
-  });
-  
-  res.writeHead(200, {
-    "Content-Type": "application/json",
-    "Access-Control-Allow-Origin": "*",
-  });
-  res.write(JSON.stringify(await response.json()));
-  res.end();
 })
 
 app.get('/lineNotify/status/:token', async (req, res) => {
@@ -142,32 +115,6 @@ app.get('/callback/lineLogin', (req, res) => {
 
 app.get('/callback/lineNotify', (req, res) => {
   res.status(200).json({status: "success"});
-})
-
-// Callback
-
-app.get('/callback/lineLogin', (req, res) => {
-  res.status(200).json({status: "success"});
-  res.end();
-})
-
-app.get('/callback/lineNotify', (req, res) => {
-  res.status(200).json({status: "success"});
-  // process.env.lineNotify_ClientID
-  res.end();
-})
-
-// Callback
-
-app.get('/callback/lineLogin', (req, res) => {
-  res.status(200).json({status: "success"});
-  res.end();
-})
-
-app.get('/callback/lineNotify', (req, res) => {
-  res.status(200).json({status: "success"});
-  // process.env.lineNotify_ClientID
-  res.end();
 })
 
 
