@@ -1,11 +1,11 @@
-'use strict';
+"use strict";
 
-import fetch from 'node-fetch';
-import express, { response } from 'express';
-import dotenv from 'dotenv';
-import cors from 'cors';
+import fetch from "node-fetch";
+import express, { response } from "express";
+import dotenv from "dotenv";
+import cors from "cors";
 dotenv.config();
-import url from 'url';
+import url from "url";
 
 // Constants
 const PORT = 8080;
@@ -18,36 +18,47 @@ const app = express();
 app.use(express.json(), cors());
 
 // Index
-app.get('/', (req, res) => {
-  res.status(200).json({status: "success"});
+app.get("/", (req, res) => {
+  res.status(200).json({ status: "success" });
   res.end();
 });
 
 // Card
 
-app.get('/card/store', async (req, res) => {
-  const response = await fetch("https://yc97463.github.io/DHSA-API/store.json", {
-    method: "GET" 
-  });
+app.get("/card/store", async (req, res) => {
+  const response = await fetch(
+    "https://yc97463.github.io/DHSA-API/store.json",
+    {
+      method: "GET",
+    }
+  );
   res.status(200).json(await response.json());
-})
+});
 
 // LINE Notify
 
 const lineNotifyOAuthHost = "https://notify-bot.line.me/oauth";
 const lineNotifyAPIHost = "https://notify-api.line.me/api";
 
-app.get('/lineNotify/connect',async (req, res) => {
+app.get("/lineNotify/connect", async (req, res) => {
   const queryObject = url.parse(req.url, true).query;
   const code = queryObject.code;
   const state = queryObject.state;
-  if(!code){
-    res.status(200).json({return:lineNotifyOAuthHost+"/authorize?client_id="+process.env.lineNotify_ClientID+"&redirect_uri="+process.env.lineNotify_CallbackURi+"&scope=notify&state=asdf&response_type=code"})
-  }else{
-    const response = await fetch(lineNotifyOAuthHost+"/token", {
+  if (!code) {
+    res.status(200).json({
+      return:
+        lineNotifyOAuthHost +
+        "/authorize?client_id=" +
+        process.env.lineNotify_ClientID +
+        "&redirect_uri=" +
+        process.env.lineNotify_CallbackURi +
+        "&scope=notify&state=asdf&response_type=code",
+    });
+  } else {
+    const response = await fetch(lineNotifyOAuthHost + "/token", {
       method: "POST",
       headers: {
-        "Content-Type": "application/x-www-form-urlencoded"
+        "Content-Type": "application/x-www-form-urlencoded",
       },
       body: new URLSearchParams({
         grant_type: "authorization_code",
@@ -57,27 +68,30 @@ app.get('/lineNotify/connect',async (req, res) => {
         client_secret: process.env.lineNotify_ClientSecret,
       }),
     });
-    res.status(200).json(await response.json())
+    res.status(200).json(await response.json());
   }
-})
+});
 
 const LN_UserToken = process.env.lineNotify_TesterToken;
-app.post('/lineNotify/notify',async (req, res) => {
+app.post("/lineNotify/notify", async (req, res) => {
   const { submitToken, content, attachment } = req.body;
-  if(submitToken!=process.env.lineNotify_submitToken){
-    res.status(401).json({status: "Invalid submitToken"});
-  }else{
-    const userName = await fetch(process.env.HOST+"/lineNotify/status/"+LN_UserToken, {
-      method: "GET"
-    }).then(userName => userName.json());
-    const response = await fetch(lineNotifyAPIHost+"/notify", {
+  if (submitToken != process.env.lineNotify_submitToken) {
+    res.status(401).json({ status: "Invalid submitToken" });
+  } else {
+    const userName = await fetch(
+      process.env.HOST + "/lineNotify/status/" + LN_UserToken,
+      {
+        method: "GET",
+      }
+    ).then((userName) => userName.json());
+    const response = await fetch(lineNotifyAPIHost + "/notify", {
       method: "POST",
       headers: {
-        "Authorization": "Bearer "+LN_UserToken,
-        "Content-Type": "application/x-www-form-urlencoded"
+        Authorization: "Bearer " + LN_UserToken,
+        "Content-Type": "application/x-www-form-urlencoded",
       },
       body: new URLSearchParams({
-        message: await userName.target+`早安！\n==========\n${content}`,
+        message: (await userName.target) + `早安！\n==========\n${content}`,
         // imageThumbnail: attachment,
         // imageFullsize: attachment,
         // stickerPackageId: 8522,
@@ -86,37 +100,36 @@ app.post('/lineNotify/notify',async (req, res) => {
     });
     res.status(200).json(await response.json());
   }
-})
+});
 
-app.get('/lineNotify/status/:token', async (req, res) => {
+app.get("/lineNotify/status/:token", async (req, res) => {
   // :token here is the token in SAID, not token for LINE Notify.
-  const {token} = req.params;
-  const response = await fetch(lineNotifyAPIHost+"/status", {
+  const { token } = req.params;
+  const response = await fetch(lineNotifyAPIHost + "/status", {
     method: "GET",
     headers: {
-      "Authorization": "Bearer "+token,
-      "Content-Type": "application/x-www-form-urlencoded"
-    }
+      Authorization: "Bearer " + token,
+      "Content-Type": "application/x-www-form-urlencoded",
+    },
   });
   res.status(200).json(await response.json());
-})
+});
 
 // Webhook
 
-app.post('/webhook/lineMessaging', async (req, res) => {
-  res.status(200).json({status: "success"});
-})
+app.post("/webhook/lineMessaging", async (req, res) => {
+  res.status(200).json({ status: "success" });
+});
 
 // Callback
 
-app.get('/callback/lineLogin', (req, res) => {
-  res.status(200).json({status: "success"});
-})
+app.get("/callback/lineLogin", (req, res) => {
+  res.status(200).json({ status: "success" });
+});
 
-app.get('/callback/lineNotify', (req, res) => {
-  res.status(200).json({status: "success"});
-})
-
+app.get("/callback/lineNotify", (req, res) => {
+  res.status(200).json({ status: "success" });
+});
 
 app.listen(parseInt(process.env.PORT) || 8080, () => {
   console.log(`Running on ${PORT}`);
