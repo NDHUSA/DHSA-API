@@ -2,7 +2,8 @@
 
 import fetch from 'node-fetch';
 import express, { response } from 'express';
-import * as dotenv from 'dotenv';
+import dotenv from 'dotenv';
+import cors from 'cors';
 dotenv.config();
 import url from 'url';
 
@@ -14,7 +15,7 @@ const PORT = 8080;
 const app = express();
 
 // Global
-app.use(express.json());
+app.use(express.json(), cors());
 
 // Index
 app.get('/', (req, res) => {
@@ -28,13 +29,7 @@ app.get('/card/store', async (req, res) => {
   const response = await fetch("https://yc97463.github.io/DHSA-API/store.json", {
     method: "GET" 
   });
-  res.writeHead(200, {
-    "Content-Type": "application/json",
-    "Access-Control-Allow-Origin": "*",
-  });
-  res.write(JSON.stringify(await response.json()));
-  res.end();
-  
+  res.status(200).json(await response.json());
 })
 
 // LINE Notify
@@ -62,12 +57,7 @@ app.get('/lineNotify/connect',async (req, res) => {
         client_secret: process.env.lineNotify_ClientSecret,
       }),
     });
-    res.writeHead(200, {
-      "Content-Type": "application/json",
-      "Access-Control-Allow-Origin": "*",
-    });
-    res.write(JSON.stringify(await response.json()));
-    res.end();
+    res.status(200).json(await response.json())
   }
 })
 
@@ -76,7 +66,6 @@ app.post('/lineNotify/notify',async (req, res) => {
   const { submitToken, content, attachment } = req.body;
   if(submitToken!=process.env.lineNotify_sendToken){
     res.status(401).json({status: "Invalid submitToken"});
-    res.end();
   }else{
     const userName = await fetch(process.env.HOST+"/lineNotify/status/"+LN_UserToken, {
       method: "GET"
@@ -95,12 +84,7 @@ app.post('/lineNotify/notify',async (req, res) => {
         // stickerId: 16581267
       }),
     });
-    res.writeHead(200, {
-      "Content-Type": "application/json",
-      "Access-Control-Allow-Origin": "*",
-    });
-    res.write(JSON.stringify(await response.json()));
-    res.end();
+    res.status(200).json(await response.json());
   }
 })
 
@@ -114,32 +98,23 @@ app.get('/lineNotify/status/:token', async (req, res) => {
       "Content-Type": "application/x-www-form-urlencoded"
     }
   });
-  res.writeHead(200, {
-    "Content-Type": "application/json",
-    "Access-Control-Allow-Origin": "*",
-  });
-  res.write(JSON.stringify(await response.json()));
-  res.end();
+  res.status(200).json(await response.json());
 })
 
 // Webhook
 
 app.post('/webhook/lineMessaging', async (req, res) => {
   res.status(200).json({status: "success"});
-  res.end();
 })
 
 // Callback
 
 app.get('/callback/lineLogin', (req, res) => {
   res.status(200).json({status: "success"});
-  res.end();
 })
 
 app.get('/callback/lineNotify', (req, res) => {
   res.status(200).json({status: "success"});
-  // process.env.lineNotify_ClientID
-  res.end();
 })
 
 
