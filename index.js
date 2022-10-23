@@ -64,7 +64,7 @@ app.get('/lineNotify/connect',async (req, res) => {
 const LN_UserToken = process.env.lineNotify_TesterToken;
 app.post('/lineNotify/notify',async (req, res) => {
   const { submitToken, content, attachment } = req.body;
-  if(submitToken!=process.env.lineNotify_sendToken){
+  if(submitToken!=process.env.lineNotify_submitToken){
     res.status(401).json({status: "Invalid submitToken"});
   }else{
     const userName = await fetch(process.env.HOST+"/lineNotify/status/"+LN_UserToken, {
