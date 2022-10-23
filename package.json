@@ -20,7 +20,7 @@
         "url": "^0.11.0"
     },
     "devDependencies": {
-        "eslint": "^8.24.0",
+        "eslint": "^8.26.0",
         "eslint-config-airbnb-base": "^15.0.0",
         "eslint-config-google": "^0.14.0",
         "eslint-plugin-import": "^2.26.0",
