@@ -79,8 +79,8 @@ app.post('/lineNotify/notify',async (req, res) => {
     res.status(401).json({status: "Invalid token"});
     res.end();
   }else{
-    const userName = await fetch(process.env.HOST+"/lineNotify/status", {
-      method: "POST"
+    const userName = await fetch(process.env.HOST+"/lineNotify/status/"+LN_UserToken, {
+      method: "GET"
     }).then(userName => userName.json());
     const response = await fetch(lineNotifyAPIHost+"/notify", {
       method: "POST",
@@ -131,11 +131,13 @@ app.post('/lineNotify/notify',async (req, res) => {
   res.end();
 })
 
-app.post('/lineNotify/status', async (req, res) => {
+app.get('/lineNotify/status/:token', async (req, res) => {
+  // :token here is the token in SAID, not token for LINE Notify.
+  const {token} = req.params;
   const response = await fetch(lineNotifyAPIHost+"/status", {
     method: "GET",
     headers: {
-      "Authorization": "Bearer "+LN_UserToken,
+      "Authorization": "Bearer "+token,
       "Content-Type": "application/x-www-form-urlencoded"
     }
   });
