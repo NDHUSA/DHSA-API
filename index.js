@@ -74,9 +74,9 @@ app.get('/lineNotify/connect',async (req, res) => {
 
 const LN_UserToken = process.env.lineNotify_TesterToken;
 app.post('/lineNotify/notify',async (req, res) => {
-  const { submitToken, content } = req.body;
+  const { submitToken, content, attachment } = req.body;
   if(submitToken!=process.env.lineNotify_sendToken){
-    res.status(401).json({status: "Invalid token"});
+    res.status(401).json({status: "Invalid submitToken"});
     res.end();
   }else{
     const userName = await fetch(process.env.HOST+"/lineNotify/status/"+LN_UserToken, {
@@ -89,11 +89,11 @@ app.post('/lineNotify/notify',async (req, res) => {
         "Content-Type": "application/x-www-form-urlencoded"
       },
       body: new URLSearchParams({
-        message: await userName.target+`早安！\n${content}`,
-        imageThumbnail: "https://miro.medium.com/max/1400/1*cYbw3hyi3dDG7aFy_-wdUg.png",
-        imageFullsize: "https://miro.medium.com/max/1400/1*cYbw3hyi3dDG7aFy_-wdUg.png",
-        stickerPackageId: 8522,
-        stickerId: 16581267
+        message: await userName.target+`早安！\n==========\n${content}`,
+        // imageThumbnail: attachment,
+        // imageFullsize: attachment,
+        // stickerPackageId: 8522,
+        // stickerId: 16581267
       }),
     });
     res.writeHead(200, {
