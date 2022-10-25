@@ -8,7 +8,7 @@ function doGet(request) {
   let jsonFormated = [];
   let skipId = 0;
   sheetValues.forEach((data) => {
-    if (skipId <= 1) {
+    if (skipId < 1) {
       skipId += 1;
       return;
     }
