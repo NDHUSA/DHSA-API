@@ -3,11 +3,11 @@
 import fetch from "node-fetch";
 import express from "express";
 import dotenv from "dotenv";
+dotenv.config();
 import cors from "cors";
 import jwt from "jsonwebtoken";
-dotenv.config();
+import googleapis, { google } from "googleapis";
 import url from "url";
-import { rejects } from "assert";
 
 // Constants
 const PORT = 8080;
@@ -25,17 +25,63 @@ app.get("/", (req, res) => {
   res.status(200).json({ status: "success" });
 });
 
+// Auth
+
+app.get("/auth/google/connect", async (req, res) => {
+  const oauth2Client = new google.auth.OAuth2(
+    process.env.GOOGLE_OAUTH_CLIENT_ID,
+    process.env.GOOGLE_OAUTH_CLIENT_SECRET,
+    process.env.HOST + "/auth/google/connect"
+  );
+  const scopes = [
+    "https://www.googleapis.com/auth/userinfo.email",
+    // "https://www.googleapis.com/auth/userinfo.profile",
+    // "openid",
+  ];
+  const queryObject = url.parse(req.url, true).query;
+  const { redirect, code } = queryObject;
+  if (!code) {
+    res.status(200).json({
+      status: "redirect",
+      url: oauth2Client.generateAuthUrl({
+        access_type: "offline",
+        scope: scopes,
+        include_granted_scopes: true,
+        response_type: "code",
+        redirect_uri: redirect,
+      }),
+    });
+  } else {
+    let { tokens } = await oauth2Client.getToken(code);
+    oauth2Client.credentials = tokens; // eslint-disable-line require-atomic-updates
+    const response = await fetch(
+      "https://oauth2.googleapis.com/tokeninfo?id_token=" + tokens.id_token
+    ).then((response) => response.json());
+    const packJWT = await fetch(process.env.HOST + "/user/token", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(response),
+    }).then((packJWT) => packJWT.json());
+    console.log(packJWT);
+    res.status(200).json(packJWT);
+  }
+});
+
 // User
 
 app.post("/user/token", (req, res) => {
-  const { account } = req.body;
+  const { email, name, picture } = req.body;
   const data = JSON.stringify({
     iss: process.env.HOST,
     iat: Date.now(),
-    account: account,
+    email: email,
+    name: name,
+    picture: picture,
   });
   const token = jwt.sign(data, process.env.JWT_SIGNATURE);
-  res.status(200).json(token);
+  res.status(200).json({ status: "jwtToken", token: token });
 });
 
 app.get("/user/token/:token", (req, res) => {
