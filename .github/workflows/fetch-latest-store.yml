@@ -25,6 +25,9 @@ jobs:
           pip install --upgrade pip
           pip install -r src/py-crawler/requirments.txt
       - name: Run Python Script
+        env:
+          GASAPI_CARD_STORE: ${{ secrets.GASAPI_CARD_STORE }}
+          GASAPI_PAYING_MEMBER: ${{ secrets.GASAPI_PAYING_MEMBER }}
         run: python3 src/py-crawler/fetch-store.py > dist/store.json
       - name: Commit files
         continue-on-error: true
