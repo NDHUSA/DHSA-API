@@ -27,11 +27,22 @@ app.get("/", (req, res) => {
 
 // User
 
+app.post("/user/token", (req, res) => {
+  const { account } = req.body;
+  const data = JSON.stringify({
+    iss: process.env.HOST,
+    iat: Date.now(),
+    account: account,
+  });
+  const token = jwt.sign(data, process.env.JWT_SIGNATURE);
+  res.status(200).json(token);
+});
+
 app.get("/user/token/:token", (req, res) => {
   const { token } = req.params;
   jwt.verify(token, process.env.JWT_SIGNATURE, (err, payload) => {
     if (err) {
-      res.status(401).json(err);
+      res.status(401).json({ status: "Invalid JWT Token" });
     } else {
       res.status(200).json(payload);
     }
