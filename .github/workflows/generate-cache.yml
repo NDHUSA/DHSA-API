@@ -1,4 +1,4 @@
-name: Fetch Store JSON form GAS
+name: Fetch JSON to Cache form GAS
 
 on:
   schedule:
@@ -24,11 +24,14 @@ jobs:
         run: |
           pip install --upgrade pip
           pip install -r src/py-crawler/requirments.txt
-      - name: Run Python Script
+      - name: Run Python Script /card/store
         env:
           GASAPI_CARD_STORE: ${{ secrets.GASAPI_CARD_STORE }}
-          GASAPI_PAYING_MEMBER: ${{ secrets.GASAPI_PAYING_MEMBER }}
         run: python3 src/py-crawler/fetch-store.py > dist/store.json
+      - name: Run Python Script /card/paying-member
+        env:
+          GASAPI_PAYING_MEMBER: ${{ secrets.GASAPI_PAYING_MEMBER }}
+        run: python3 src/py-crawler/fetch-paying-member.py > dist/paying-member.json
       - name: Commit files
         continue-on-error: true
         run: |
