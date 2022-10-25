@@ -4,8 +4,10 @@ import fetch from "node-fetch";
 import express from "express";
 import dotenv from "dotenv";
 import cors from "cors";
+import jwt from "jsonwebtoken";
 dotenv.config();
 import url from "url";
+import { rejects } from "assert";
 
 // Constants
 const PORT = 8080;
@@ -23,6 +25,19 @@ app.get("/", (req, res) => {
   res.status(200).json({ status: "success" });
 });
 
+// User
+
+app.get("/user/token/:token", (req, res) => {
+  const { token } = req.params;
+  jwt.verify(token, process.env.JWT_SIGNATURE, (err, payload) => {
+    if (err) {
+      res.status(401).json(err);
+    } else {
+      res.status(200).json(payload);
+    }
+  });
+});
+
 // Card
 
 app.get("/card/store", async (req, res) => {
@@ -37,7 +52,6 @@ app.get("/card/membership/:stuId", async (req, res) => {
   );
   let isMember = Boolean(false);
   for (let i = 0; i < response.length; i++) {
-    console.log(isMember);
     if (stuId == response[i].stuId) {
       isMember = Boolean(true);
       break;
