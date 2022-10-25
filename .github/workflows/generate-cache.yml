@@ -30,7 +30,7 @@ jobs:
         run: python3 src/py-crawler/fetch-store.py > dist/store.json
       - name: Run Python Script /card/paying-member
         env:
-          GASAPI_PAYING_MEMBER: ${{ secrets.GASAPI_PAYING_MEMBER }}
+          GASAPI_CARD_PAYING_MEMBER: ${{ secrets.GASAPI_CARD_PAYING_MEMBER }}
         run: python3 src/py-crawler/fetch-paying-member.py > dist/paying-member.json
       - name: Commit files
         continue-on-error: true
