@@ -38,7 +38,7 @@ app.get("/card/membership/:stuId", async (req, res) => {
   let isMember = Boolean(false);
   for (let i = 0; i < response.length; i++) {
     console.log(isMember);
-    if (stuId == response[i].id) {
+    if (stuId == response[i].stuId) {
       isMember = Boolean(true);
       break;
     }

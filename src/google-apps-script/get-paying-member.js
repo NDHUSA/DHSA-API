@@ -13,7 +13,7 @@ function doGet(request) {
       return;
     }
     jsonFormated.push({
-      ["id"]: data[0],
+      ["stuId"]: data[0],
       ["name"]: data[1].toString(),
     });
   });
