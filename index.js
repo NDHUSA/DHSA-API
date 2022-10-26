@@ -51,7 +51,7 @@ app.get("/auth/google/connect", async (req, res) => {
       }),
     });
   } else {
-    let { tokens } = await oauth2Client.getToken(code);
+    const { tokens } = await oauth2Client.getToken(code);
     oauth2Client.credentials = tokens; // eslint-disable-line require-atomic-updates
     const response = await fetch(
       "https://oauth2.googleapis.com/tokeninfo?id_token=" + tokens.id_token
