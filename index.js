@@ -59,11 +59,11 @@ app.get("/auth/google/connect", async (req, res) => {
     const packJWT = await fetch(process.env.HOST + "/user/token", {
       method: "POST",
       headers: {
+        Authorization: "Bearer " + process.env.tokenGenerator_submitToken,
         "Content-Type": "application/json",
       },
       body: JSON.stringify(response),
     }).then((packJWT) => packJWT.json());
-    console.log(packJWT);
     res.status(200).json(packJWT);
   }
 });
@@ -71,18 +71,23 @@ app.get("/auth/google/connect", async (req, res) => {
 // User
 
 app.post("/user/token", (req, res) => {
-  const { hd, email, name, picture } = req.body;
-  const data = JSON.stringify({
-    iss: process.env.HOST,
-    iat: Date.now(),
-    exp: Math.floor(Date.now() / 1000) + 60 * 60,
-    hd: hd,
-    email: email,
-    name: name,
-    picture: picture,
-  });
-  const token = jwt.sign(data, process.env.JWT_SIGNATURE);
-  res.status(200).json({ status: "jwtToken", token: token });
+  const { authorization } = req.headers;
+  if (authorization != "Bearer " + process.env.tokenGenerator_authorization) {
+    res.status(401).json({ status: "Invalid Authorization" });
+  } else {
+    const { hd, email, name, picture } = req.body;
+    const data = JSON.stringify({
+      iss: process.env.HOST,
+      iat: Date.now(),
+      exp: Math.floor(Date.now() / 1000) + 60 * 60,
+      hd: hd,
+      email: email,
+      name: name,
+      picture: picture,
+    });
+    const token = jwt.sign(data, process.env.JWT_SIGNATURE);
+    res.status(200).json({ status: "jwtToken", token: token });
+  }
 });
 
 app.get("/user/token/:token", (req, res) => {
@@ -161,9 +166,10 @@ app.get("/lineNotify/connect", async (req, res) => {
 
 const LN_UserToken = process.env.lineNotify_TesterToken;
 app.post("/lineNotify/notify", async (req, res) => {
-  const { submitToken, content, attachment } = req.body;
-  if (submitToken != process.env.lineNotify_submitToken) {
-    res.status(401).json({ status: "Invalid submitToken" });
+  const { authorization } = req.headers;
+  const { content, attachment } = req.body;
+  if (authorization != "Bearer " + process.env.lineNotify_authorization) {
+    res.status(401).json({ status: "Invalid Authorization" });
   } else {
     const userName = await fetch(
       process.env.HOST + "/lineNotify/status/" + LN_UserToken,
