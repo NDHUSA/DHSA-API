@@ -74,8 +74,8 @@ app.post("/user/token", (req, res) => {
   const { iat, exp, hd, email, name, picture } = req.body;
   const data = JSON.stringify({
     iss: process.env.HOST,
-    iat: Date().now,
-    exp: exp,
+    iat: Date.now(),
+    exp: Math.floor(Date.now() / 1000) + 60 * 60,
     hd: hd,
     email: email,
     name: name,
