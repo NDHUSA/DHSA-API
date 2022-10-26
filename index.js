@@ -8,7 +8,6 @@ import cors from "cors";
 import jwt from "jsonwebtoken";
 import googleapis, { google } from "googleapis";
 import url from "url";
-import { rejects } from "assert";
 
 // Constants
 const PORT = 8080;
