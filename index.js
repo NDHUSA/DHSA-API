@@ -59,7 +59,7 @@ app.get("/auth/google/connect", async (req, res) => {
     const packJWT = await fetch(process.env.HOST + "/user/token", {
       method: "POST",
       headers: {
-        Authorization: "Bearer " + process.env.tokenGenerator_submitToken,
+        Authorization: "Bearer " + process.env.tokenGenerator_authorization,
         "Content-Type": "application/json",
       },
       body: JSON.stringify(response),
