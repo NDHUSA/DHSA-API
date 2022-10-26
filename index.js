@@ -71,10 +71,12 @@ app.get("/auth/google/connect", async (req, res) => {
 // User
 
 app.post("/user/token", (req, res) => {
-  const { email, name, picture } = req.body;
+  const { iat, exp, hd, email, name, picture } = req.body;
   const data = JSON.stringify({
     iss: process.env.HOST,
-    iat: Date.now(),
+    iat: iat,
+    exp: exp,
+    hd: hd,
     email: email,
     name: name,
     picture: picture,
