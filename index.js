@@ -28,18 +28,17 @@ app.get("/", (req, res) => {
 // Auth
 
 app.get("/auth/google/connect", async (req, res) => {
+  const queryObject = url.parse(req.url, true).query;
+  const redirect =
+    queryObject.redirect || process.env.HOST + "/auth/google/connect";
+  const { code } = queryObject;
   const oauth2Client = new google.auth.OAuth2(
     process.env.GOOGLE_OAUTH_CLIENT_ID,
     process.env.GOOGLE_OAUTH_CLIENT_SECRET,
-    process.env.HOST + "/auth/google/connect"
+    redirect
   );
-  const scopes = [
-    "https://www.googleapis.com/auth/userinfo.email",
-    // "https://www.googleapis.com/auth/userinfo.profile",
-    // "openid",
-  ];
-  const queryObject = url.parse(req.url, true).query;
-  const { redirect, code } = queryObject;
+  const scopes = ["https://www.googleapis.com/auth/userinfo.email"];
+
   if (!code) {
     res.status(200).json({
       status: "redirect",
