@@ -37,7 +37,11 @@ app.get("/auth/google/connect", async (req, res) => {
     process.env.GOOGLE_OAUTH_CLIENT_SECRET,
     redirect
   );
-  const scopes = ["https://www.googleapis.com/auth/userinfo.email"];
+  const scopes = [
+    "https://www.googleapis.com/auth/userinfo.email",
+    "https://www.googleapis.com/auth/userinfo.profile",
+    "openid",
+  ];
 
   if (!code) {
     res.status(200).json({
@@ -51,7 +55,7 @@ app.get("/auth/google/connect", async (req, res) => {
       }),
     });
   } else {
-    let { tokens } = await oauth2Client.getToken(code);
+    const { tokens } = await oauth2Client.getToken(code);
     oauth2Client.credentials = tokens; // eslint-disable-line require-atomic-updates
     const response = await fetch(
       "https://oauth2.googleapis.com/tokeninfo?id_token=" + tokens.id_token
