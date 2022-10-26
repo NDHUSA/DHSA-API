@@ -37,7 +37,11 @@ app.get("/auth/google/connect", async (req, res) => {
     process.env.GOOGLE_OAUTH_CLIENT_SECRET,
     redirect
   );
-  const scopes = ["https://www.googleapis.com/auth/userinfo.email"];
+  const scopes = [
+    "https://www.googleapis.com/auth/userinfo.email",
+    "https://www.googleapis.com/auth/userinfo.profile",
+    "openid",
+  ];
 
   if (!code) {
     res.status(200).json({
