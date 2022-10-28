@@ -55,20 +55,24 @@ app.get("/auth/google/connect", async (req, res) => {
       }),
     });
   } else {
-    const { tokens } = await oauth2Client.getToken(code);
-    oauth2Client.credentials = tokens; // eslint-disable-line require-atomic-updates
-    const response = await fetch(
-      "https://oauth2.googleapis.com/tokeninfo?id_token=" + tokens.id_token
-    ).then((response) => response.json());
-    const packJWT = await fetch(process.env.HOST + "/user/token", {
-      method: "POST",
-      headers: {
-        Authorization: "Bearer " + process.env.tokenGenerator_authorization,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(response),
-    }).then((packJWT) => packJWT.json());
-    res.status(200).json(packJWT);
+    try {
+      const { tokens } = await oauth2Client.getToken(code);
+      oauth2Client.credentials = tokens; // eslint-disable-line require-atomic-updates
+      const response = await fetch(
+        "https://oauth2.googleapis.com/tokeninfo?id_token=" + tokens.id_token
+      ).then((response) => response.json());
+      const packJWT = await fetch(process.env.HOST + "/user/token", {
+        method: "POST",
+        headers: {
+          Authorization: "Bearer " + process.env.tokenGenerator_authorization,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(response),
+      }).then((packJWT) => packJWT.json());
+      res.status(200).json(packJWT);
+    } catch (err) {
+      res.status(400).json({ status: "Auth Error" });
+    }
   }
 });
 
