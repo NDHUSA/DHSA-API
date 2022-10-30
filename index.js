@@ -25,11 +25,15 @@ app.use(express.json(), cors());
 app.get("/", (req, res) => {
   res.status(200).json({ status: "success" });
 });
-app.get("/:filename", function (req, res) {
+app.get("/:resource", function (req, res) {
   const __filename = fileURLToPath(import.meta.url);
   const __dirname = path.dirname(__filename);
-  const { filename } = req.params;
-  res.sendFile(filename, { root: __dirname + "/static" });
+  const { resource } = req.params;
+  res.sendFile(resource, { root: __dirname + "/static" }, (err) => {
+    if (err) {
+      res.status(404).json({ status: "Resource Not Found" });
+    }
+  });
 });
 
 // Auth
