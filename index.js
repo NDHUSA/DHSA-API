@@ -6,8 +6,9 @@ import dotenv from "dotenv";
 dotenv.config();
 import cors from "cors";
 import jwt from "jsonwebtoken";
-import googleapis, { google } from "googleapis";
-import url from "url";
+import { google } from "googleapis";
+import url, { fileURLToPath } from "url";
+import path from "path";
 
 // Constants
 const PORT = 8080;
@@ -23,6 +24,12 @@ app.use(express.json(), cors());
 
 app.get("/", (req, res) => {
   res.status(200).json({ status: "success" });
+});
+app.get("/:filename", function (req, res) {
+  const __filename = fileURLToPath(import.meta.url);
+  const __dirname = path.dirname(__filename);
+  const { filename } = req.params;
+  res.sendFile(filename, { root: __dirname + "/static" });
 });
 
 // Auth
