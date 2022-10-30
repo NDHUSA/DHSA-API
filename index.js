@@ -97,7 +97,7 @@ app.post("/user/token", (req, res) => {
     const { hd, email, name, picture } = req.body;
     const data = JSON.stringify({
       iss: process.env.HOST,
-      iat: Date.now(),
+      iat: Math.floor(Date.now() / 1000),
       exp: Math.floor(Date.now() / 1000) + 60 * 60,
       email: email,
       hd: email.split("@")[1],
