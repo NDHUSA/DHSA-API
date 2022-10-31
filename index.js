@@ -120,6 +120,42 @@ app.get("/user/token/:token", (req, res) => {
   });
 });
 
+// Workflow
+
+app.post("/workflow/github/issue", async (req, res) => {
+  const { authorization } = req.headers;
+  if (authorization != "Bearer " + process.env.workflow_github_authorization) {
+    res.status(401).json({ status: "Invalid Authorization" });
+  } else {
+    const { title, content, repo } = req.body;
+    const response = await fetch(
+      "https://api.github.com/repos/" + repo + "/issues",
+      {
+        method: "POST",
+        headers: {
+          Authorization: "Bearer " + process.env.github_repoToken,
+          accept: "application/vnd.github+json",
+        },
+        body: JSON.stringify({
+          title: title,
+          body: content,
+          assignees: ["yc97463"],
+          labels: ["user report"],
+        }),
+      }
+    ).then((response) => response.json());
+    console.log(
+      new URLSearchParams({
+        title: title,
+        body: content,
+        assignees: ["yc97463"],
+        labels: ["user report"],
+      })
+    );
+    res.status(200).json(response);
+  }
+});
+
 // Card
 
 app.get("/card/store", async (req, res) => {
