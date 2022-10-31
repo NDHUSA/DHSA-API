@@ -73,7 +73,7 @@ app.get("/auth/google/connect", async (req, res) => {
         "https://oauth2.googleapis.com/tokeninfo?id_token=" + tokens.id_token
       ).then((response) => response.json());
       const packJWT = await fetch(process.env.HOST + "/user/token", {
-        method: "POST",
+        method: "GET",
         headers: {
           Authorization: "Bearer " + process.env.tokenGenerator_authorization,
           "Content-Type": "application/json",
@@ -89,7 +89,7 @@ app.get("/auth/google/connect", async (req, res) => {
 
 // User
 
-app.post("/user/token", (req, res) => {
+app.get("/user/token", (req, res) => {
   const { authorization } = req.headers;
   if (authorization != "Bearer " + process.env.tokenGenerator_authorization) {
     res.status(401).json({ status: "Invalid Authorization" });
