@@ -102,7 +102,7 @@ app.post("/user/token", (req, res) => {
       email: email,
       hd: email.split("@")[1],
       name: name,
-      picture: picture,
+      avatar: picture,
     });
     const token = jwt.sign(data, process.env.JWT_SIGNATURE);
     res.status(200).json({ status: "jwtToken", token: token });
