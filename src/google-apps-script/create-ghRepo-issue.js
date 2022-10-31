@@ -33,7 +33,7 @@ function onFormSubmit(e) {
     " | " +
     (payload[2] ? "https://drive.google.com/open?id=" + payload[2] : "false") +
     " | " +
-    payload[5] +
+    payload[5].split(".")[6] +
     " |";
 
   var response = UrlFetchApp.fetch(
