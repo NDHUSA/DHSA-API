@@ -144,14 +144,6 @@ app.post("/workflow/github/issue", async (req, res) => {
         }),
       }
     ).then((response) => response.json());
-    console.log(
-      JSON.stringify({
-        title: title,
-        body: content,
-        assignees: ["yc97463"],
-        labels: ["user report"],
-      })
-    );
     res.status(200).json(response);
   }
 });
