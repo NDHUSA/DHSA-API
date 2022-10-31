@@ -145,7 +145,7 @@ app.post("/workflow/github/issue", async (req, res) => {
       }
     ).then((response) => response.json());
     console.log(
-      new URLSearchParams({
+      JSON.stringify({
         title: title,
         body: content,
         assignees: ["yc97463"],
