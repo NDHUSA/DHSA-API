@@ -271,6 +271,14 @@ app.get("/callback/lineNotify", (req, res) => {
   res.status(200).json({ status: "success" });
 });
 
+app.get("*", (req, res) => {
+  res.status(404).json({ status: "Not Found" });
+});
+
+app.post("*", (req, res) => {
+  res.status(404).json({ status: "Not Found" });
+});
+
 app.listen(parseInt(process.env.PORT) || 8080, () => {
   console.log(`Running on ${PORT}`);
 });
