@@ -56,45 +56,15 @@ app.get("/google", async (req, res) => {
   }
 });
 
-app.get("/ndhuLDAP/:token", async (req, res) => {
-  const { token } = req.params;
-  const userInfo = await fetch(process.env.HOST + "/auth/token/" + token).then(
-    (response) => response.json()
-  );
+app.get("/ndhuLDAP/:stuId", async (req, res) => {
+  const { stuId } = req.params;
+  const agent = new https.Agent({
+    rejectUnauthorized: false,
+  });
   try {
-    const accountId = userInfo.email.split("@")[0].toLowerCase();
-    const timestamp = new Date();
-    const year = timestamp.toLocaleString("default", { year: "numeric" });
-    const month = timestamp.toLocaleString("default", { month: "2-digit" });
-    const day = timestamp.toLocaleString("default", { day: "2-digit" });
-    const agent = new https.Agent({
-      rejectUnauthorized: false,
-    });
-    try {
-      const response = await fetch(
-        process.env.ndhuLDAP_endPoint +
-          new URLSearchParams({
-            uid: accountId,
-            token: md5(
-              `${process.env.ndhuLDAP_token}_${accountId}_${year}-${month}-${day}`
-            ),
-          }),
-        {
-          method: "GET",
-          agent,
-        }
-      )
-        .then((response) => response.text())
-        .then((response) => response.replace(/\s/g, ""))
-        .then((response) => response.split(":"));
-      res.status(200).json({ uid: response[0], status: response[1] });
-    } catch (err) {
-      res.status(500).json(err);
-      console.log(err);
-      res.end();
-    }
   } catch (err) {
-    res.status(401).json(userInfo);
+    console.log(err);
+    res.end();
   }
 });
 
