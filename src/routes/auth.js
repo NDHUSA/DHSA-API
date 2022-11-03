@@ -3,6 +3,8 @@ import jwt from "jsonwebtoken";
 import url from "url";
 import fetch from "node-fetch";
 import { google } from "googleapis";
+import md5 from "md5";
+import https from "https";
 
 const app = express.Router();
 
@@ -52,6 +54,18 @@ app.get("/google", async (req, res) => {
     } catch (err) {
       res.status(400).json({ status: "Auth Error" });
     }
+  }
+});
+
+app.get("/ndhuLDAP/:stuId", async (req, res) => {
+  const { stuId } = req.params;
+  const agent = new https.Agent({
+    rejectUnauthorized: false,
+  });
+  try {
+  } catch (err) {
+    console.log(err);
+    res.end();
   }
 });
 
