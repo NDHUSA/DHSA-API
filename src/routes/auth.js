@@ -10,8 +10,7 @@ const app = express.Router();
 
 app.get("/google", async (req, res) => {
   const queryObject = url.parse(req.url, true).query;
-  const redirect =
-    queryObject.redirect || process.env.HOST + "/auth/google/connect";
+  const redirect = queryObject.redirect || process.env.HOST + "/auth/google";
   const { code } = queryObject;
   const oauth2Client = new google.auth.OAuth2(
     process.env.GOOGLE_OAUTH_CLIENT_ID,
