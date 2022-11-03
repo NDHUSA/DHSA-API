@@ -10,6 +10,9 @@ WORKDIR /usr/src/app
 # Copying this first prevents re-running npm install on every code change.
 COPY package*.json ./
 
+RUN apt update && apt install tzdata -y
+ENV TZ="Asia/Taipei"
+
 # Install production dependencies.
 # If you add a package-lock.json, speed your build by switching to 'npm ci'.
 # RUN npm ci --only=production
