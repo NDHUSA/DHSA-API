@@ -62,7 +62,7 @@ app.get("/ndhuLDAP/:token", async (req, res) => {
     (response) => response.json()
   );
   try {
-    const accountId = userInfo.email.split("@")[0];
+    const accountId = userInfo.email.split("@")[0].toLowerCase();
     const timestamp = new Date();
     const year = timestamp.toLocaleString("default", { year: "numeric" });
     const month = timestamp.toLocaleString("default", { month: "2-digit" });
