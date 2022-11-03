@@ -57,8 +57,8 @@ app.get("/google", async (req, res) => {
   }
 });
 
-app.get("/ndhuLDAP/:stuId", async (req, res) => {
-  const { stuId } = req.params;
+app.get("/ndhuLDAP/:accountId", async (req, res) => {
+  const { accountId } = req.params;
   const timestamp = new Date();
   const year = timestamp.toLocaleString("default", { year: "numeric" });
   const month = timestamp.toLocaleString("default", { month: "2-digit" });
@@ -70,9 +70,9 @@ app.get("/ndhuLDAP/:stuId", async (req, res) => {
     const response = await fetch(
       process.env.ndhuLDAP_endPoint +
         new URLSearchParams({
-          uid: stuId,
+          uid: accountId,
           token: md5(
-            `${process.env.ndhuLDAP_token}_${stuId}_${year}-${month}-${day}`
+            `${process.env.ndhuLDAP_token}_${accountId}_${year}-${month}-${day}`
           ),
         }),
       {
