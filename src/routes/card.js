@@ -8,22 +8,22 @@ app.get("/store", async (req, res) => {
   res.status(200).json(await response.json());
 });
 
-app.get("/membership/:stuId", async (req, res) => {
-  const { stuId } = req.params;
+app.get("/membership/:uid", async (req, res) => {
+  const { uid } = req.params;
   const response = await fetch(process.env.CACHE + "/paying-member.json").then(
     (response) => response.json()
   );
   let isMember = Boolean(false);
   for (let i = 0; i < response.length; i++) {
-    if (stuId == response[i].stuId) {
+    if (uid == response[i].stuId) {
       isMember = Boolean(true);
       break;
     }
   }
   if (isMember == Boolean(true)) {
-    res.status(200).json({ stuId: stuId, membership: "paying" });
+    res.status(200).json({ uid: uid, membership: "paying" });
   } else {
-    res.status(200).json({ stuId: stuId, membership: "normal" });
+    res.status(200).json({ uid: uid, membership: "normal" });
   }
 });
 
