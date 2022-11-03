@@ -3,6 +3,8 @@ import jwt from "jsonwebtoken";
 import url from "url";
 import fetch from "node-fetch";
 import { google } from "googleapis";
+import md5 from "md5";
+import https from "https";
 
 const app = express.Router();
 
@@ -52,6 +54,39 @@ app.get("/google", async (req, res) => {
     } catch (err) {
       res.status(400).json({ status: "Auth Error" });
     }
+  }
+});
+
+app.get("/ndhuLDAP/:stuId", async (req, res) => {
+  const { stuId } = req.params;
+  const timestamp = new Date();
+  const year = timestamp.toLocaleString("default", { year: "numeric" });
+  const month = timestamp.toLocaleString("default", { month: "2-digit" });
+  const day = timestamp.toLocaleString("default", { day: "2-digit" });
+  const agent = new https.Agent({
+    rejectUnauthorized: false,
+  });
+  try {
+    const response = await fetch(
+      process.env.ndhuLDAP_endPoint +
+        new URLSearchParams({
+          uid: stuId,
+          token: md5(
+            `${process.env.ndhuLDAP_token}_${stuId}_${year}-${month}-${day}`
+          ),
+        }),
+      {
+        method: "GET",
+        agent,
+      }
+    )
+      .then((response) => response.text())
+      .then((response) => response.replace(/\s/g, ""))
+      .then((response) => response.split(":"));
+    res.status(200).json({ uid: response[0], status: response[1] });
+  } catch (err) {
+    console.log(err);
+    res.end();
   }
 });
 
