@@ -1,4 +1,4 @@
-import express from "express";
+import express, { response } from "express";
 import jwt from "jsonwebtoken";
 import url from "url";
 import fetch from "node-fetch";
@@ -57,8 +57,13 @@ app.get("/google", async (req, res) => {
   }
 });
 
-app.get("/ndhuLDAP/:accountId", async (req, res) => {
-  const { accountId } = req.params;
+app.get("/ndhuLDAP/:token", async (req, res) => {
+  const { token } = req.params;
+  const userInfo = await fetch(process.env.HOST + "/auth/token/" + token).then(
+    (response) => response.json()
+  );
+  console.log(userInfo);
+  const accountId = userInfo.email.split("@")[0];
   const timestamp = new Date();
   const year = timestamp.toLocaleString("default", { year: "numeric" });
   const month = timestamp.toLocaleString("default", { month: "2-digit" });
