@@ -38,7 +38,7 @@ app.get("/:resource", function (req, res) {
 
 // Auth
 
-app.get("/auth/google/connect", async (req, res) => {
+app.get("/auth/google", async (req, res) => {
   const queryObject = url.parse(req.url, true).query;
   const redirect =
     queryObject.redirect || process.env.HOST + "/auth/google/connect";
@@ -272,11 +272,11 @@ app.get("/callback/lineNotify", (req, res) => {
 });
 
 app.get("*", (req, res) => {
-  res.status(404).json({ status: "Not Found" });
+  res.status(404).json({ status: "Route Not Found" });
 });
 
 app.post("*", (req, res) => {
-  res.status(404).json({ status: "Not Found" });
+  res.status(404).json({ status: "Route Not Found" });
 });
 
 app.listen(parseInt(process.env.PORT) || 8080, () => {
