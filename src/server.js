@@ -23,11 +23,11 @@ app.use("/workflow", workflow_router);
 app.use("/card", card_router);
 
 app.get("*", (req, res) => {
-  res.status(404).json({ status: "Route Not Found" });
+  res.status(404).json({ error: "Route Not Found" });
 });
 
 app.post("*", (req, res) => {
-  res.status(404).json({ status: "Route Not Found" });
+  res.status(404).json({ error: "Route Not Found" });
 });
 
 app.listen(parseInt(process.env.PORT) || 8080, () => {

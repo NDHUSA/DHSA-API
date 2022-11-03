@@ -43,7 +43,7 @@ app.post("/notify", async (req, res) => {
   const { authorization } = req.headers;
   const { content, attachment } = req.body;
   if (authorization != "Bearer " + process.env.lineNotify_authorization) {
-    res.status(401).json({ status: "Invalid Authorization" });
+    res.status(401).json({ error: "Invalid Authorization" });
   } else {
     const userName = await fetch(process.env.HOST + "/status/" + LN_UserToken, {
       method: "GET",
