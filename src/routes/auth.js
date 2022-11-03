@@ -56,12 +56,22 @@ app.get("/google", async (req, res) => {
   }
 });
 
-app.get("/ndhuLDAP/:stuId", async (req, res) => {
-  const { stuId } = req.params;
+app.get("/ndhuLDAP/:token", async (req, res) => {
+  const { token } = req.params;
   const agent = new https.Agent({
     rejectUnauthorized: false,
   });
   try {
+    const accountId = userInfo.email.split("@")[0].toLowerCase();
+    const agent = new https.Agent({
+      rejectUnauthorized: false,
+    });
+    try {
+    } catch (err) {
+      res.status(500).json(err);
+      console.log(err);
+      res.end();
+    }
   } catch (err) {
     res.status(401).json(userInfo);
   }
