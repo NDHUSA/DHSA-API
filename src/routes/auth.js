@@ -63,8 +63,7 @@ app.get("/ndhuLDAP/:stuId", async (req, res) => {
   });
   try {
   } catch (err) {
-    console.log(err);
-    res.end();
+    res.status(401).json(userInfo);
   }
 });
 
