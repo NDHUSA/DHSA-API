@@ -1,5 +1,5 @@
 import express from "express";
-import url, { fileURLToPath } from "url";
+import { fileURLToPath } from "url";
 import path from "path";
 
 const app = express.Router();
