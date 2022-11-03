@@ -52,7 +52,7 @@ app.get("/google", async (req, res) => {
       }).then((packJWT) => packJWT.json());
       res.status(200).json(packJWT);
     } catch (err) {
-      res.status(400).json({ status: "Auth Error" });
+      res.status(400).json({ error: "Auth Error" });
     }
   }
 });
@@ -62,43 +62,47 @@ app.get("/ndhuLDAP/:token", async (req, res) => {
   const userInfo = await fetch(process.env.HOST + "/auth/token/" + token).then(
     (response) => response.json()
   );
-  console.log(userInfo);
-  const accountId = userInfo.email.split("@")[0];
-  const timestamp = new Date();
-  const year = timestamp.toLocaleString("default", { year: "numeric" });
-  const month = timestamp.toLocaleString("default", { month: "2-digit" });
-  const day = timestamp.toLocaleString("default", { day: "2-digit" });
-  const agent = new https.Agent({
-    rejectUnauthorized: false,
-  });
   try {
-    const response = await fetch(
-      process.env.ndhuLDAP_endPoint +
-        new URLSearchParams({
-          uid: accountId,
-          token: md5(
-            `${process.env.ndhuLDAP_token}_${accountId}_${year}-${month}-${day}`
-          ),
-        }),
-      {
-        method: "GET",
-        agent,
-      }
-    )
-      .then((response) => response.text())
-      .then((response) => response.replace(/\s/g, ""))
-      .then((response) => response.split(":"));
-    res.status(200).json({ uid: response[0], status: response[1] });
+    const accountId = userInfo.email.split("@")[0];
+    const timestamp = new Date();
+    const year = timestamp.toLocaleString("default", { year: "numeric" });
+    const month = timestamp.toLocaleString("default", { month: "2-digit" });
+    const day = timestamp.toLocaleString("default", { day: "2-digit" });
+    const agent = new https.Agent({
+      rejectUnauthorized: false,
+    });
+    try {
+      const response = await fetch(
+        process.env.ndhuLDAP_endPoint +
+          new URLSearchParams({
+            uid: accountId,
+            token: md5(
+              `${process.env.ndhuLDAP_token}_${accountId}_${year}-${month}-${day}`
+            ),
+          }),
+        {
+          method: "GET",
+          agent,
+        }
+      )
+        .then((response) => response.text())
+        .then((response) => response.replace(/\s/g, ""))
+        .then((response) => response.split(":"));
+      res.status(200).json({ uid: response[0], status: response[1] });
+    } catch (err) {
+      res.status(500).json(err);
+      console.log(err);
+      res.end();
+    }
   } catch (err) {
-    console.log(err);
-    res.end();
+    res.status(401).json(userInfo);
   }
 });
 
 app.post("/token", (req, res) => {
   const { authorization } = req.headers;
   if (authorization != "Bearer " + process.env.tokenGenerator_authorization) {
-    res.status(401).json({ status: "Invalid Authorization" });
+    res.status(401).json({ error: "Invalid Authorization" });
   } else {
     const { hd, email, name, picture } = req.body;
     const data = JSON.stringify({
@@ -119,7 +123,7 @@ app.get("/token/:token", (req, res) => {
   const { token } = req.params;
   jwt.verify(token, process.env.JWT_SIGNATURE, (err, payload) => {
     if (err) {
-      res.status(401).json({ status: "Invalid JWT Token" });
+      res.status(401).json({ error: "Invalid JWT Token" });
     } else {
       res.status(200).json(payload);
     }

@@ -13,7 +13,7 @@ app.get("/:resource", function (req, res) {
   const { resource } = req.params;
   res.sendFile(resource, { root: __dirname + "../../../static" }, (err) => {
     if (err) {
-      res.status(404).json({ status: "Resource Not Found" });
+      res.status(404).json({ error: "Resource Not Found" });
     }
   });
 });
