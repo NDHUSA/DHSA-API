@@ -40,7 +40,7 @@ app.get("/google", async (req, res) => {
       const response = await fetch(
         "https://oauth2.googleapis.com/tokeninfo?id_token=" + tokens.id_token
       ).then((response) => response.json());
-      const packJWT = await fetch(process.env.HOST + "/user/token", {
+      const packJWT = await fetch(process.env.HOST + "/auth/token", {
         method: "POST",
         headers: {
           Authorization: "Bearer " + process.env.tokenGenerator_authorization,
