@@ -6,8 +6,8 @@
   "type": "module",
   "scripts": {
     "lint": "eslint --ext .js --ignore-path .gitignore .",
-    "start": "node index.js",
-    "dev": "nodemon index.js"
+    "start": "node src/server.js",
+    "dev": "nodemon src/server.js"
   },
   "keywords": [],
   "author": "yc97463",
