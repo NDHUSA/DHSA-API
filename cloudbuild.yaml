@@ -15,6 +15,6 @@ steps:
       - "--image"
       - "gcr.io/$PROJECT_ID/dhsa-api:$COMMIT_SHA"
       - "--region"
-      - "REGION"
+      - "asia-east1"
 images:
   - "gcr.io/$PROJECT_ID/dhsa-api:$COMMIT_SHA"
