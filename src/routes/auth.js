@@ -3,7 +3,6 @@ import jwt from "jsonwebtoken";
 import url from "url";
 import fetch from "node-fetch";
 import { google } from "googleapis";
-import md5 from "md5";
 import https from "https";
 import { ndhuLdapAuth } from "../libs/config.js";
 
