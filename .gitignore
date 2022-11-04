@@ -3,3 +3,4 @@ package-lock.json
 sandbox/*
 .DS_Store
 .env
+src/libs/config.js

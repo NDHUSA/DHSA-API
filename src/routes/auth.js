@@ -5,6 +5,7 @@ import fetch from "node-fetch";
 import { google } from "googleapis";
 import md5 from "md5";
 import https from "https";
+import { ndhuLdapAuth } from "../libs/config.js";
 
 const app = express.Router();
 
@@ -56,12 +57,27 @@ app.get("/google", async (req, res) => {
   }
 });
 
-app.get("/ndhuLDAP/:stuId", async (req, res) => {
-  const { stuId } = req.params;
+app.get("/ndhuLDAP/:token", async (req, res) => {
+  const { token } = req.params;
+  const userInfo = await fetch(process.env.HOST + "/auth/token/" + token, {
+    method: "GET",
+  }).then((response) => response.json());
   const agent = new https.Agent({
     rejectUnauthorized: false,
   });
   try {
+    const accountId = userInfo.email.split("@")[0].toLowerCase();
+    const agent = new https.Agent({
+      rejectUnauthorized: false,
+    });
+    try {
+      const response = await ndhuLdapAuth(accountId, agent);
+      res.status(200).json(response);
+    } catch (err) {
+      res.status(500).json(err);
+      console.log(err);
+      res.end();
+    }
   } catch (err) {
     res.status(401).json(userInfo);
   }
