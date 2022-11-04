@@ -71,7 +71,7 @@ app.get("/ndhuLDAP/:token", async (req, res) => {
     });
     try {
       const response = await ndhuLdapAuth(accountId, agent);
-      res.status(200).json(response);
+      res.status(200).json({ uid: response[0], status: response[1] });
     } catch (err) {
       res.status(500).json(err);
       console.log(err);
