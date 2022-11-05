@@ -3,8 +3,7 @@ import jwt from "jsonwebtoken";
 import url from "url";
 import fetch from "node-fetch";
 import { google } from "googleapis";
-import https from "https";
-import { ndhuLdapAuth } from "../libs/config.js";
+import { ndhuLdapAuth } from "private-libs/src/ndhuLdapAuth.mjs";
 
 const app = express.Router();
 
@@ -61,16 +60,10 @@ app.get("/ndhuLDAP/:token", async (req, res) => {
   const userInfo = await fetch(process.env.HOST + "/auth/token/" + token, {
     method: "GET",
   }).then((response) => response.json());
-  const agent = new https.Agent({
-    rejectUnauthorized: false,
-  });
   try {
     const accountId = userInfo.email.split("@")[0].toLowerCase();
-    const agent = new https.Agent({
-      rejectUnauthorized: false,
-    });
     try {
-      const response = await ndhuLdapAuth(accountId, agent);
+      const response = await ndhuLdapAuth(accountId);
       res.status(200).json({ uid: response[0], status: response[1] });
     } catch (err) {
       res.status(500).json(err);
