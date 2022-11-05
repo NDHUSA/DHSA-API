@@ -22,7 +22,7 @@
     "jsonwebtoken": "^8.5.1",
     "md5": "^2.3.0",
     "node-fetch": "^3.2.10",
-    "private-libs": "git+https://yc97463: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@github.com/yc97463/DHSA-API-Private-Libs.git",
+    "private-libs": "git+https://yc97463:TOKEN@github.com/yc97463/DHSA-API-Private-Libs.git",
     "url": "^0.11.0"
   },
   "devDependencies": {
