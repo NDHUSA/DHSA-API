@@ -6,6 +6,7 @@ import router from "./routes/index.js";
 import auth_router from "./routes/auth.js";
 import workflow_router from "./routes/workflow.js";
 import card_router from "./routes/card.js";
+import vote_router from "./routes/vote.js";
 
 // Constants
 const PORT = 8080;
@@ -17,10 +18,11 @@ dotenv.config();
 // Global
 app.use(cors());
 app.use(express.json());
-app.use("/", router);
 app.use("/auth", auth_router);
 app.use("/workflow", workflow_router);
 app.use("/card", card_router);
+app.use("/vote", vote_router);
+app.use("/", router);
 
 app.get("*", (req, res) => {
   res.status(404).json({ error: "Route Not Found" });
