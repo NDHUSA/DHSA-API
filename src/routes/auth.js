@@ -84,7 +84,7 @@ app.post("/token", (req, res) => {
     const data = JSON.stringify({
       iss: process.env.HOST,
       iat: Math.floor(Date.now() / 1000),
-      exp: Math.floor(Date.now() / 1000) + 60 * 60,
+      exp: Math.floor(Date.now() / 1000) + 7 * 24 * 60 * 60,
       email: email,
       hd: email.split("@")[1],
       name: name,
