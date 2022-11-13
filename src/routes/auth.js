@@ -55,10 +55,11 @@ app.get("/google", async (req, res) => {
   }
 });
 
-app.get("/ndhuLDAP/:token", async (req, res) => {
-  const { token } = req.params;
-  const userInfo = await fetch(process.env.HOST + "/auth/token/" + token, {
+app.get("/ndhuLDAP", async (req, res) => {
+  const { token } = req.headers;
+  const userInfo = await fetch(process.env.HOST + "/auth/token", {
     method: "GET",
+    headers: { token: token },
   }).then((response) => response.json());
   try {
     const accountId = userInfo.email.split("@")[0].toLowerCase();
@@ -73,6 +74,17 @@ app.get("/ndhuLDAP/:token", async (req, res) => {
   } catch (err) {
     res.status(401).json(userInfo);
   }
+});
+
+app.get("/token", (req, res) => {
+  const { token } = req.headers;
+  jwt.verify(token, process.env.JWT_SIGNATURE, (err, payload) => {
+    if (err) {
+      res.status(401).json({ error: "Invalid JWT Token" });
+    } else {
+      res.status(200).json(payload);
+    }
+  });
 });
 
 app.post("/token", (req, res) => {
@@ -93,17 +105,6 @@ app.post("/token", (req, res) => {
     const token = jwt.sign(data, process.env.JWT_SIGNATURE);
     res.status(200).json({ status: "jwtToken", token: token });
   }
-});
-
-app.get("/token/:token", (req, res) => {
-  const { token } = req.params;
-  jwt.verify(token, process.env.JWT_SIGNATURE, (err, payload) => {
-    if (err) {
-      res.status(401).json({ error: "Invalid JWT Token" });
-    } else {
-      res.status(200).json(payload);
-    }
-  });
 });
 
 export default app;
