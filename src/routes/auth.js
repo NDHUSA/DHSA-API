@@ -88,6 +88,9 @@ app.get("/token", (req, res) => {
 });
 
 app.post("/token", (req, res) => {
+  function exp(days) {
+    return days * 24 * 60 * 60; // 1 Days
+  }
   const { authorization } = req.headers;
   if (authorization != "Bearer " + process.env.tokenGenerator_authorization) {
     res.status(401).json({ error: "Invalid Authorization" });
@@ -96,7 +99,7 @@ app.post("/token", (req, res) => {
     const data = JSON.stringify({
       iss: process.env.HOST,
       iat: Math.floor(Date.now() / 1000),
-      exp: Math.floor(Date.now() / 1000) + 7 * 24 * 60 * 60,
+      exp: Math.floor(Date.now() / 1000) + exp(30 * 5), // n Days
       email: email,
       hd: email.split("@")[1],
       name: name,
