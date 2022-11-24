@@ -21,9 +21,9 @@ app.get("/membership/:uid", async (req, res) => {
     }
   }
   if (isMember == Boolean(true)) {
-    res.status(200).json({ uid: uid, membership: "paying" });
+    res.status(200).json({ uid: uid, membership: "會費會員" });
   } else {
-    res.status(200).json({ uid: uid, membership: "normal" });
+    res.status(200).json({ uid: uid, membership: "一般會員" });
   }
 });
 
