@@ -27,4 +27,24 @@ app.get("/membership/:uid", async (req, res) => {
   }
 });
 
+app.post("/membership/:uid", async (req, res) => {
+  const { uid } = req.params;
+  const { token } = req.headers;
+  if (token != process.env.membership_afterpay_token) {
+    res.status(401).json({ status: "Auth error" });
+  } else {
+    const response = await fetch(
+      "https://docs.google.com/forms/d/e/1FAIpQLSdFTO7XQghlOXWkjaP1T6hajuzpR9eBCyitUJA2ZZiofgm_Bg/formResponse",
+      { method: "POST", body: new URLSearchParams({ "entry.305453546": uid }) }
+    );
+    if (response.status == 200) {
+      res.status(200).json({ status: "success", uid: uid });
+    } else {
+      res
+        .status(response.status)
+        .json({ status: "Form response error", uid: uid });
+    }
+  }
+});
+
 export default app;
