@@ -35,8 +35,8 @@ function doGet(request) {
         ["en"]: data[1].toString(),
       },
       ["description"]: {
-        ["zh-tw"]: data[3].toString(),
-        ["en"]: data[4].toString(),
+        ["zh-tw"]: data[2].toString(),
+        ["en"]: data[3].toString(),
       },
     });
   });
