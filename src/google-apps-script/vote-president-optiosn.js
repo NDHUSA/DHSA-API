@@ -30,9 +30,13 @@ function doGet(request) {
     }
     jsonFormated.push({
       ["id"]: MD5(data[0] + data[1]),
-      ["name"]: {
+      ["title"]: {
         ["zh-tw"]: data[0].toString(),
         ["en"]: data[1].toString(),
+      },
+      ["description"]: {
+        ["zh-tw"]: data[3].toString(),
+        ["en"]: data[4].toString(),
       },
     });
   });
