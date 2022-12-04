@@ -6,7 +6,7 @@ import router from "./routes/index.js";
 import auth_router from "./routes/auth.js";
 import workflow_router from "./routes/workflow.js";
 import card_router from "./routes/card.js";
-import vote_router from "./routes/vote.js";
+import vote_router from "./routes/vote/index.js";
 
 // Constants
 const PORT = 8080;
