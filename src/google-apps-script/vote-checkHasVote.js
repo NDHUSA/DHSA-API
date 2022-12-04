@@ -8,6 +8,7 @@ function doGet(request) {
   let jsonFormated = [];
   let skipId = 0;
   let hasVote = false;
+  const { parameter } = request;
   const { uid } = parameter;
   sheetValues.forEach((data) => {
     if (skipId < 1) {
