@@ -31,13 +31,14 @@ function doGet(request) {
     jsonFormated.push({
       ["id"]: MD5(data[0] + data[1]),
       ["title"]: {
-        ["zh-tw"]: data[0].toString(),
+        ["zh"]: data[0].toString(),
         ["en"]: data[1].toString(),
       },
       ["description"]: {
-        ["zh-tw"]: data[2].toString(),
+        ["zh"]: data[2].toString(),
         ["en"]: data[3].toString(),
       },
+      ["avatar"]: data[4].toString(),
     });
   });
   let exportFormat = JSON.stringify(jsonFormated);
