@@ -99,6 +99,7 @@ app.post("/token", (req, res) => {
   } else {
     const { hd, email, name, picture } = req.body;
     const data = JSON.stringify({
+      status: true,
       iss: process.env.HOST,
       iat: Math.floor(Date.now() / 1000),
       exp: Math.floor(Date.now() / 1000) + exp(30 * 5), // n Days
