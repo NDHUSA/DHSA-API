@@ -5,7 +5,7 @@ import path from "path";
 const app = express.Router();
 
 app.get("/", (req, res) => {
-  res.status(200).json({ status: "success" });
+  res.status(200).json({ status: true });
 });
 app.get("/:resource", function (req, res) {
   const __filename = fileURLToPath(import.meta.url);
@@ -13,7 +13,7 @@ app.get("/:resource", function (req, res) {
   const { resource } = req.params;
   res.sendFile(resource, { root: __dirname + "../../../static" }, (err) => {
     if (err) {
-      res.status(404).json({ error: "Resource Not Found" });
+      res.status(404).json({ status: false, msg: "Resource Not Found" });
     }
   });
 });

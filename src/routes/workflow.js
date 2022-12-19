@@ -6,7 +6,7 @@ const app = express.Router();
 app.post("/github/issue", async (req, res) => {
   const { authorization } = req.headers;
   if (authorization != "Bearer " + process.env.workflow_github_authorization) {
-    res.status(401).json({ error: "Invalid Authorization" });
+    res.status(401).json({ status: false, msg: "Invalid Authorization" });
   } else {
     const { title, content, repo } = req.body;
     const response = await fetch(

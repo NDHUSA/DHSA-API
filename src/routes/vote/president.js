@@ -17,8 +17,7 @@ app.get("/status", async (req, res) => {
   if (!verityToken.exp) {
     res.status(401).json({
       status: false,
-      error: { jwt: verityToken.error },
-      msg: "",
+      msg: { jwt: verityToken.error },
     });
   } else if (verityToken.email.split("@")[1] != "gms.ndhu.edu.tw") {
     res.status(401).json({
@@ -42,6 +41,7 @@ app.get("/status", async (req, res) => {
     ) {
       res.status(401).json({
         status: false,
+        error: "not match",
         msg: `您目前為「${schoolIdentity.status}」，不符合本次投票條件。`,
       });
     } else {
@@ -91,7 +91,9 @@ app.get("/", async (req, res) => {
     });
   } catch (err) {
     console.log(err);
-    res.status(500).json({ status: "Fetch Error", msg: err.toString() });
+    res
+      .status(500)
+      .json({ status: false, error: "Fetch Error", msg: err.toString() });
   }
 });
 
@@ -103,7 +105,9 @@ app.post("/", async (req, res) => {
     headers: { token: token },
   }).then((response) => response.json());
   if (!verity.status) {
-    res.status(401).json({ error: "no permission to vote", msg: verity.msg });
+    res
+      .status(401)
+      .json({ status: false, error: "no permission to vote", msg: verity.msg });
   } else {
     console.log(req.body);
     const { decision } = req.body;
@@ -144,13 +148,16 @@ app.post("/", async (req, res) => {
         res.status(417).json({ status: "option not found" });
       } else {
         res.status(200).json({
+          status: true,
           event: eventInfos.event,
           option: eventInfos.options[i],
           stub_token: uuid,
         });
       }
     } else {
-      res.status(doVote.status).json({ status: "Form response error" });
+      res
+        .status(doVote.status)
+        .json({ status: false, msg: "Form response error" });
     }
   }
 });

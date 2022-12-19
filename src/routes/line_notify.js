@@ -12,6 +12,7 @@ app.get("/connect", async (req, res) => {
   const state = queryObject.state;
   if (!code) {
     res.status(200).json({
+      status: true,
       return:
         lineNotifyOAuthHost +
         "/authorize?client_id=" +
@@ -43,7 +44,7 @@ app.post("/notify", async (req, res) => {
   const { authorization } = req.headers;
   const { content, attachment } = req.body;
   if (authorization != "Bearer " + process.env.lineNotify_authorization) {
-    res.status(401).json({ error: "Invalid Authorization" });
+    res.status(401).json({ status: false, msg: "Invalid Authorization" });
   } else {
     const userName = await fetch(process.env.HOST + "/status/" + LN_UserToken, {
       method: "GET",

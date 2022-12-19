@@ -24,7 +24,7 @@ app.get("/google", async (req, res) => {
 
   if (!code) {
     res.status(200).json({
-      status: "redirect",
+      status: true,
       url: oauth2Client.generateAuthUrl({
         access_type: "offline",
         scope: scopes,
@@ -50,7 +50,7 @@ app.get("/google", async (req, res) => {
       }).then((packJWT) => packJWT.json());
       res.status(200).json(packJWT);
     } catch (err) {
-      res.status(400).json({ error: "Auth Error" });
+      res.status(400).json({ status: false, msg: "Auth Error" });
     }
   }
 });
@@ -65,7 +65,9 @@ app.get("/ndhuLDAP", async (req, res) => {
     const accountId = userInfo.email.split("@")[0].toLowerCase();
     try {
       const response = await ndhuLdapAuth(accountId);
-      res.status(200).json({ uid: response[0], status: response[1] });
+      res
+        .status(200)
+        .json({ status: true, uid: response[0], status: response[1] });
     } catch (err) {
       res.status(500).json(err);
       console.log(err);
@@ -80,7 +82,7 @@ app.get("/token", (req, res) => {
   const { token } = req.headers;
   jwt.verify(token, process.env.JWT_SIGNATURE, (err, payload) => {
     if (err) {
-      res.status(401).json({ error: "Invalid JWT Token" });
+      res.status(401).json({ status: false, msg: "Invalid JWT Token" });
     } else {
       res.status(200).json(payload);
     }
@@ -93,7 +95,7 @@ app.post("/token", (req, res) => {
   }
   const { authorization } = req.headers;
   if (authorization != "Bearer " + process.env.tokenGenerator_authorization) {
-    res.status(401).json({ error: "Invalid Authorization" });
+    res.status(401).json({ status: false, msg: "Invalid Authorization" });
   } else {
     const { hd, email, name, picture } = req.body;
     const data = JSON.stringify({
@@ -106,7 +108,7 @@ app.post("/token", (req, res) => {
       avatar: picture,
     });
     const token = jwt.sign(data, process.env.JWT_SIGNATURE);
-    res.status(200).json({ status: "jwtToken", token: token });
+    res.status(200).json({ status: true, token: token });
   }
 });
 
