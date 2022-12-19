@@ -85,7 +85,7 @@ app.get("/token", (req, res) => {
       res.status(401).json({ status: false, msg: "Invalid JWT Token" });
     } else {
       payload.status = true;
-      res.status(200).json({ payload });
+      res.status(200).json(payload);
     }
   });
 });
