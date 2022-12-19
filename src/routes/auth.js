@@ -67,9 +67,9 @@ app.get("/ndhuLDAP", async (req, res) => {
       const response = await ndhuLdapAuth(accountId);
       res
         .status(200)
-        .json({ status: true, uid: response[0], status: response[1] });
+        .json({ status: true, uid: response[0], role: response[1] });
     } catch (err) {
-      res.status(500).json(err);
+      res.status(500).json({ status: false, err });
       console.log(err);
       res.end();
     }
