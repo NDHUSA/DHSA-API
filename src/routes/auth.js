@@ -84,7 +84,8 @@ app.get("/token", (req, res) => {
     if (err) {
       res.status(401).json({ status: false, msg: "Invalid JWT Token" });
     } else {
-      res.status(200).json(payload);
+      payload.status = true;
+      res.status(200).json({ payload });
     }
   });
 });
@@ -99,7 +100,6 @@ app.post("/token", (req, res) => {
   } else {
     const { hd, email, name, picture } = req.body;
     const data = JSON.stringify({
-      status: true,
       iss: process.env.HOST,
       iat: Math.floor(Date.now() / 1000),
       exp: Math.floor(Date.now() / 1000) + exp(30 * 5), // n Days
