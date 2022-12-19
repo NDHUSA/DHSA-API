@@ -100,8 +100,8 @@ app.post("/token", (req, res) => {
       iss: process.env.HOST,
       iat: Math.floor(Date.now() / 1000),
       exp: Math.floor(Date.now() / 1000) + exp(30 * 5), // n Days
-      email: email,
-      hd: email.split("@")[1],
+      email: email.toLowerCase(),
+      hd: email.split("@")[1].toLowerCase(),
       name: name,
       avatar: picture,
     });
