@@ -9,14 +9,14 @@ app.get("/store", async (req, res) => {
 });
 
 app.get("/membership/:uid", async (req, res) => {
-  const { uid } = req.params;
+  const uid = req.params.uid.toLowerCase();
   try {
     const response = await fetch(
       process.env.CACHE + "/paying-member.json"
     ).then((response) => response.json());
     let isMember = Boolean(false);
     for (let i = 0; i < response.length; i++) {
-      if (uid == response[i].stuId) {
+      if (uid.toUpperCase() == response[i].stuId) {
         isMember = Boolean(true);
         break;
       }
