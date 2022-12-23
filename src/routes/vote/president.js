@@ -14,10 +14,10 @@ app.get("/status", async (req, res) => {
     headers: { token: token },
   }).then((response) => response.json());
 
-  if (!verityToken.exp) {
+  if (!verityToken.status) {
     res.status(401).json({
       status: false,
-      msg: { jwt: verityToken.error },
+      msg: verityToken.error,
     });
   } else if (verityToken.email.split("@")[1] != "gms.ndhu.edu.tw") {
     res.status(401).json({
