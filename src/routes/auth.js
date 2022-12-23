@@ -61,20 +61,14 @@ app.get("/ndhuLDAP", async (req, res) => {
     method: "GET",
     headers: { token: token },
   }).then((response) => response.json());
+  if (!userInfo.status) res.status(401).json(userInfo);
+
   try {
     const accountId = userInfo.email.split("@")[0].toLowerCase();
-    try {
-      const response = await ndhuLdapAuth(accountId);
-      res
-        .status(200)
-        .json({ status: true, uid: response[0], role: response[1] });
-    } catch (err) {
-      res.status(500).json({ status: false, err });
-      console.log(err);
-      res.end();
-    }
+    const response = await ndhuLdapAuth(accountId);
+    res.status(200).json({ status: true, uid: response[0], role: response[1] });
   } catch (err) {
-    res.status(401).json(userInfo);
+    res.status(500).json({ status: false, err });
   }
 });
 
