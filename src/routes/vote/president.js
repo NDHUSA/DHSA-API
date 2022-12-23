@@ -34,11 +34,7 @@ app.get("/status", async (req, res) => {
         headers: { token: token },
       }
     ).then((response) => response.json());
-    if (
-      schoolIdentity.status != "在學" &&
-      schoolIdentity.status != "在職" &&
-      schoolIdentity.status != "校友"
-    ) {
+    if (!schoolIdentity.status) {
       res.status(401).json({
         status: false,
         error: "not match",
