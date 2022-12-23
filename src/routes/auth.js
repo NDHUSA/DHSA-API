@@ -66,7 +66,14 @@ app.get("/ndhuLDAP", async (req, res) => {
   try {
     const accountId = userInfo.email.split("@")[0].toLowerCase();
     const response = await ndhuLdapAuth(accountId);
-    res.status(200).json({ status: true, uid: response[0], role: response[1] });
+    const isNDHUer = ["在職", "在學", "校友"].includes(response[1])
+      ? true
+      : false;
+    res.status(200).json({
+      status: isNDHUer,
+      uid: accountId,
+      role: response[1] ? response[1] : response[0],
+    });
   } catch (err) {
     res.status(500).json({ status: false, err });
   }
