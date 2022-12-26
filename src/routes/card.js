@@ -14,15 +14,15 @@ app.get("/membership/:uid", async (req, res) => {
     const response = await fetch(
       process.env.CACHE + "/paying-member.json"
     ).then((response) => response.json());
-    let isMember = Boolean(false);
+    let isMember = false;
     for (let i = 0; i < response.length; i++) {
       if (uid.toUpperCase() == response[i].stuId) {
-        isMember = Boolean(true);
+        isMember = true;
         break;
       }
     }
 
-    if (isMember == Boolean(true)) {
+    if (isMember) {
       res.status(200).json({ status: true, uid: uid, membership: "會費會員" });
     } else {
       res.status(200).json({ status: true, uid: uid, membership: "一般會員" });
