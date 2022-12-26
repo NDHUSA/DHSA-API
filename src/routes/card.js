@@ -14,14 +14,10 @@ app.get("/membership/:uid", async (req, res) => {
     const response = await fetch(
       process.env.CACHE + "/paying-member.json"
     ).then((response) => response.json());
-    let isMember = false;
-    for (let i = 0; i < response.length; i++) {
-      if (uid == response[i].stuId) {
-        isMember = true;
-        break;
-      }
-    }
 
+    const isMember = response.find((response) => {
+      return uid == response.stuId;
+    });
     if (isMember) {
       res.status(200).json({ status: true, uid: uid, membership: "會費會員" });
     } else {
