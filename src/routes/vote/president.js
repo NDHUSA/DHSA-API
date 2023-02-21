@@ -61,7 +61,9 @@ app.get("/status", async (req, res) => {
           schoolIdentity: schoolIdentity.status,
         });
       } else {
-        res.status(401).json({ status: false, msg: "曾已投票。" });
+        res
+          .status(401)
+          .json({ status: false, msg: verityToken.email + " 曾已投票。" });
       }
     }
   }
@@ -101,6 +103,7 @@ app.post("/", async (req, res) => {
     headers: { token: token },
   }).then((response) => response.json());
   if (!verity.status) {
+    // throw new Error(verity.msg);
     res
       .status(401)
       .json({ status: false, error: "no permission to vote", msg: verity.msg });
