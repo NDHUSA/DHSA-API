@@ -21,6 +21,7 @@
     "googleapis": "^108.0.0",
     "jsonwebtoken": ">=9.0.0",
     "md5": "^2.3.0",
+    "mongodb": "^5.0.1",
     "node-fetch": "^3.2.10",
     "private-libs": "git+https://yc97463:TOKEN@github.com/yc97463/DHSA-API-Private-Libs.git",
     "url": "^0.11.0",
