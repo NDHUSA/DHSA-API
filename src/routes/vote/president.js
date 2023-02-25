@@ -31,8 +31,6 @@ app.get("/status", async (req, res) => {
     });
   } else {
     // Verity User Identity at school
-    // const schoolIdentity = await fetch(process.env.HOST + "/auth/ndhuLDAP", {
-
     const schoolIdentity = await fetch(
       "https://api.dhsa.ndhu.edu.tw/auth/ndhuLDAP",
       {
@@ -92,7 +90,6 @@ app.get("/", async (req, res) => {
   try {
     const response = await fetch(
       process.env.CACHE + "/vote-president-options.json"
-      // "https://script.google.com/macros/s/AKfycbxUypDclhvuCxYjS23lXLNV-oqBEynziR4tlm4UC41Ou_V-hMbpnF4bz7b0_PNnSpaX/exec"
     ).then((response) => response.json());
     res.status(200).json({
       event: {
@@ -102,9 +99,24 @@ app.get("/", async (req, res) => {
       options: response,
     });
   } catch (err) {
-    res
-      .status(500)
-      .json({ status: false, error: "Fetch Error", msg: err.toString() });
+    try {
+      const response = await fetch(
+        "https://script.google.com/macros/s/AKfycbxUypDclhvuCxYjS23lXLNV-oqBEynziR4tlm4UC41Ou_V-hMbpnF4bz7b0_PNnSpaX/exec"
+      ).then((response) => response.json());
+      res.status(200).json({
+        event: {
+          id: event,
+          name: { zh: "校長遴選模擬投票", en: "Voting for President" },
+        },
+        options: response,
+      });
+    } catch (err) {
+      res.status(500).json({
+        status: false,
+        error: "Totally Fetch Error",
+        msg: err.toString(),
+      });
+    }
   }
 });
 
@@ -146,7 +158,6 @@ app.post("/", async (req, res) => {
     headers: { token: token },
   }).then((response) => response.json());
   if (!verity.status) {
-    // throw new Error(verity.msg);
     res
       .status(401)
       .json({ status: false, error: "no permission to vote", msg: verity.msg });
@@ -157,7 +168,6 @@ app.post("/", async (req, res) => {
     const timestamp = new Date();
 
     // connect with database
-
     const database = client.db("dhsa-service");
     try {
       await client.connect();
