@@ -123,24 +123,58 @@ app.post("/", async (req, res) => {
   } else {
     const { decision } = req.body;
     const uuid = uuidv4();
-    const doVote = await fetch(
-      "https://docs.google.com/forms/d/e/1FAIpQLSephR2KyAAyFKYTkTScIVjdaOVPEUCeKomqhiYBTwo22eKeuA/formResponse",
-      {
-        method: "POST",
-        body: new URLSearchParams({
-          "entry.1951820008": uuid,
-          "entry.1233176071": decision,
-          "entry.717131348": verity.schoolIdentity,
-        }),
+    const timestampHumanDate = new Date().toDateString();
+    const timestamp = new Date();
+
+    // connect with database
+
+    const database = client.db("dhsa-service");
+    try {
+      await client.connect();
+    } catch (err) {
+      res.status(500).json({
+        status: false,
+        error: "database connection error",
+        msg: err.toString(),
+      });
     }
-    );
-    const doRecordUid = await fetch(
-      "https://docs.google.com/forms/d/e/1FAIpQLSeJQVa88zE-dLpzBZohNvOk6pn9p1SSSiLIj2ChC5QHJNLiUA/formResponse",
-      {
-        method: "POST",
-        body: new URLSearchParams({
-          "entry.1612200948": verity.uid,
-        }),
+
+    // doVote
+    try {
+      const collection = database.collection("votePresidentTickets");
+      const insertData = {
+        uuid: uuid,
+        decision: decision,
+        role: verity.schoolIdentity,
+        timestamp: timestamp,
+        timestampHumanDate: timestampHumanDate,
+      };
+      const doVote = await collection.insertOne(insertData);
+    } catch (err) {
+      res.status(500).json({
+        status: false,
+        error: "database error when inserting ticket infomation",
+        msg: err.toString(),
+      });
+    }
+
+    // doRecordUid
+    try {
+      const collection = database.collection("votePresidentHasVoted");
+      const insertData = {
+        uid: verity.uid,
+        timestamp: timestamp,
+        timestampHumanDate: timestampHumanDate,
+      };
+      const doRecordUid = await collection.insertOne(insertData);
+    } catch (err) {
+      res.status(500).json({
+        status: false,
+        error: "database error when inserting user information",
+        msg: err.toString(),
+      });
+    } finally {
+      await client.close();
     }
 
     const eventInfos = await fetch(process.env.HOST + "/vote/president")
