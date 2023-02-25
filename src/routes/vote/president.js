@@ -108,6 +108,36 @@ app.get("/", async (req, res) => {
   }
 });
 
+// Empty All Records
+app.delete("/", async (req, res) => {
+  try {
+    await client.connect();
+    const database = client.db("dhsa-service");
+
+    // votePresidentTickets
+    const resultTickets = await database
+      .collection("votePresidentTickets")
+      .deleteMany({});
+
+    // votePresidentHasVoted
+    const resultVoted = await database
+      .collection("votePresidentHasVoted")
+      .deleteMany({});
+    res.status(200).json({
+      status: true,
+      msg: `Done! ${resultTickets.deletedCount} + ${resultVoted.deletedCount} document(s) had been deleted this time.`,
+    });
+  } catch (err) {
+    res.status(500).json({
+      status: false,
+      error: "database connection error",
+      msg: err.toString(),
+    });
+  } finally {
+    await client.close();
+  }
+});
+
 // Vote
 app.post("/", async (req, res) => {
   const { token } = req.headers;
