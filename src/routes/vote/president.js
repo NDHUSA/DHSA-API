@@ -1,7 +1,6 @@
 import express, { response } from "express";
 import fetch from "node-fetch";
 import { v4 as uuidv4 } from "uuid";
-import bodyParser from "body-parser";
 import { MongoClient } from "mongodb";
 
 const app = express.Router();
@@ -42,7 +41,7 @@ app.get("/status", async (req, res) => {
       res.status(401).json({
         status: false,
         error: "not match",
-        msg: `您目前為「${schoolIdentity.status}」，不符合本次投票條件。`,
+        msg: `您目前為「${schoolIdentity.role}」，不符合本次投票條件。`,
       });
     } else {
       // if hasVote -> disable
@@ -69,7 +68,7 @@ app.get("/status", async (req, res) => {
           status: true,
           hasVote: hasVoted,
           uid: verityToken.email.split("@")[0],
-          schoolIdentity: schoolIdentity.status,
+          schoolIdentity: schoolIdentity.role,
         });
       } else {
         res.status(401).json({
