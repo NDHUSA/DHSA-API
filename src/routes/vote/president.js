@@ -17,6 +17,27 @@ app.get("/status", async (req, res) => {
     headers: { token: token },
   }).then((response) => response.json());
 
+  try {
+    await client.connect();
+    const database = client.db("dhsa-service");
+    const collection = database.collection("logs");
+    const timestamp = new Date();
+    const insertData = {
+      email: verityToken.email,
+      action: "/vote/president/status",
+      timestamp: timestamp,
+    };
+    const record = await collection.insertOne(insertData);
+  } catch (err) {
+    res.status(500).json({
+      status: false,
+      error: err,
+      msg: "something wrong when connecting to database",
+    });
+  } finally {
+    await client.close();
+  }
+
   if (!verityToken.status) {
     res.status(401).json({
       status: false,
