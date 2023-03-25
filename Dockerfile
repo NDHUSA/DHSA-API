@@ -20,9 +20,12 @@ ARG PRIVATE_REPO_TOKEN
 
 RUN npm install -g npm@9.6.2 && \ 
   npm install git+https://yc97463:$PRIVATE_REPO_TOKEN@github.com/yc97463/DHSA-API-Private-Libs.git
+RUN npm install pm2 -g
+
 
 # Copy local code to the container image.
 COPY . .
 
 # Run the web service on container startup.
-CMD [ "npm", "run", "start" ]
+# CMD [ "npm", "run", "start" ]
+CMD ["pm2-runtime", "src/server.js", "--no-daemon"]
