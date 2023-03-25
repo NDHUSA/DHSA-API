@@ -9,3 +9,13 @@ npm run start
 # Run in Dev mode
 npm run dev
 ```
+
+## Deploy by Docker Image
+
+```bash
+# Pull Docker Image
+docker pull ndhusa/dhsa-api
+
+# Run Docker Image
+docker run dhsa-api
+```

@@ -3,7 +3,7 @@ import jwt from "jsonwebtoken";
 import url from "url";
 import fetch from "node-fetch";
 import { google } from "googleapis";
-import { ndhuLdapAuth } from "private-libs/src/ndhuLdapAuth.mjs";
+import { ndhuLdapAuth } from "dhsa-api-private-libs/src/ndhuLdapAuth.mjs";
 
 const app = express.Router();
 
@@ -64,7 +64,7 @@ app.get("/ndhuLDAP", async (req, res) => {
   if (!userInfo.status) res.status(401).json(userInfo);
 
   try {
-    const accountId = userInfo.email.split("@")[0].toLowerCase();
+    const accountId = userInfo.email.split("@")[0].toLowerCase(); // Upper Case Required
     const response = await ndhuLdapAuth(accountId);
     const isNDHUer = ["在職", "在學", "校友"].includes(response[1])
       ? true

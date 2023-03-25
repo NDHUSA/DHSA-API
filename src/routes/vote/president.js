@@ -1,9 +1,14 @@
 import express, { response } from "express";
 import fetch from "node-fetch";
 import { v4 as uuidv4 } from "uuid";
-import bodyParser from "body-parser";
+import { MongoClient } from "mongodb";
+import dotenv from "dotenv";
 
 const app = express.Router();
+
+dotenv.config();
+const uri = "mongodb://" + process.env.MONGODB_URI;
+const client = new MongoClient(uri);
 
 // Check User Status
 app.get("/status", async (req, res) => {
@@ -13,6 +18,27 @@ app.get("/status", async (req, res) => {
   const verityToken = await fetch(process.env.HOST + "/auth/token", {
     headers: { token: token },
   }).then((response) => response.json());
+
+  try {
+    await client.connect();
+    const database = client.db("dhsa-service");
+    const collection = database.collection("logs");
+    const timestamp = new Date();
+    const insertData = {
+      email: verityToken.email,
+      action: "/vote/president/status",
+      timestamp: timestamp,
+    };
+    const record = await collection.insertOne(insertData);
+  } catch (err) {
+    res.status(500).json({
+      status: false,
+      error: err,
+      msg: "something wrong when connecting to database",
+    });
+  } finally {
+    await client.close();
+  }
 
   if (!verityToken.status) {
     res.status(401).json({
@@ -27,46 +53,56 @@ app.get("/status", async (req, res) => {
     });
   } else {
     // Verity User Identity at school
-    // const schoolIdentity = await fetch(process.env.HOST + "/auth/ndhuLDAP", {
     const schoolIdentity = await fetch(
       "https://api.dhsa.ndhu.edu.tw/auth/ndhuLDAP",
       {
         headers: { token: token },
       }
     ).then((response) => response.json());
+
     if (!schoolIdentity.status) {
       res.status(401).json({
         status: false,
         error: "not match",
-        msg: `您目前為「${schoolIdentity.status}」，不符合本次投票條件。`,
+        msg: `您目前為「${schoolIdentity.role}」，不符合本次投票條件。`,
       });
     } else {
       // if hasVote -> disable
-      const hasVote = await fetch(
-        "https://script.google.com/macros/s/AKfycbzDHld10p4qE0yVrWpTIU1QAanGd5E-iliXDNsWR4DbVD4BbHSIkmIoNg51xzo3U0Fopg/exec?" +
-          new URLSearchParams({
-            uid: schoolIdentity.uid,
-          }),
-        {
-          method: "GET",
-        }
-      )
-        .then((response) => response.json())
-        .then((response) => response.status);
-      if (!hasVote) {
+      let hasVoted = false;
+      try {
+        await client.connect();
+        const database = client.db("dhsa-service");
+        const collection = database.collection("votePresidentHasVoted");
+        const query = await collection
+          .find({ uid: schoolIdentity.uid.toString() })
+          .toArray();
+        hasVoted = query.length == 0 ? false : query;
+      } catch (err) {
+        res.status(500).json({
+          status: false,
+          error: err,
+          msg: "something wrong when connecting to database",
+        });
+      } finally {
+        await client.close();
+      }
+      if (!hasVoted) {
         res.status(200).json({
           status: true,
-          hasVote: hasVote,
+          hasVote: hasVoted,
           uid: verityToken.email.split("@")[0],
-          schoolIdentity: schoolIdentity.status,
+          schoolIdentity: schoolIdentity.role,
         });
       } else {
-        res.status(401).json({ status: false, msg: "曾已投票。" });
+        res.status(401).json({
+          status: false,
+          msg: `UID: ${verityToken.email.split("@")[0]} 曾已於 ${
+            hasVoted[0].timestampHumanDate
+          } 投票。`,
+        });
       }
     }
   }
-
-  // https://docs.google.com/forms/d/e/1FAIpQLSephR2KyAAyFKYTkTScIVjdaOVPEUCeKomqhiYBTwo22eKeuA/viewform?usp=pp_url&entry.1951820008=AAAAA&entry.1233176071=BBBBB
 });
 
 const event = "president";
@@ -76,7 +112,6 @@ app.get("/", async (req, res) => {
   try {
     const response = await fetch(
       process.env.CACHE + "/vote-president-options.json"
-      // "https://script.google.com/macros/s/AKfycbxUypDclhvuCxYjS23lXLNV-oqBEynziR4tlm4UC41Ou_V-hMbpnF4bz7b0_PNnSpaX/exec"
     ).then((response) => response.json());
     res.status(200).json({
       event: {
@@ -86,10 +121,54 @@ app.get("/", async (req, res) => {
       options: response,
     });
   } catch (err) {
-    console.log(err);
-    res
-      .status(500)
-      .json({ status: false, error: "Fetch Error", msg: err.toString() });
+    try {
+      const response = await fetch(
+        "https://script.google.com/macros/s/AKfycbxUypDclhvuCxYjS23lXLNV-oqBEynziR4tlm4UC41Ou_V-hMbpnF4bz7b0_PNnSpaX/exec"
+      ).then((response) => response.json());
+      res.status(200).json({
+        event: {
+          id: event,
+          name: { zh: "校長遴選模擬投票", en: "Voting for President" },
+        },
+        options: response,
+      });
+    } catch (err) {
+      res.status(500).json({
+        status: false,
+        error: "Totally Fetch Error",
+        msg: err.toString(),
+      });
+    }
+  }
+});
+
+// Empty All Records
+app.delete("/", async (req, res) => {
+  try {
+    await client.connect();
+    const database = client.db("dhsa-service");
+
+    // votePresidentTickets
+    const resultTickets = await database
+      .collection("votePresidentTickets")
+      .deleteMany({});
+
+    // votePresidentHasVoted
+    const resultVoted = await database
+      .collection("votePresidentHasVoted")
+      .deleteMany({});
+    res.status(200).json({
+      status: true,
+      msg: `Done! ${resultTickets.deletedCount} + ${resultVoted.deletedCount} document(s) had been deleted this time.`,
+    });
+  } catch (err) {
+    res.status(500).json({
+      status: false,
+      error: "database connection error",
+      msg: err.toString(),
+    });
+  } finally {
+    await client.close();
   }
 });
 
@@ -105,55 +184,80 @@ app.post("/", async (req, res) => {
       .status(401)
       .json({ status: false, error: "no permission to vote", msg: verity.msg });
   } else {
-    console.log(req.body);
     const { decision } = req.body;
-    console.log(decision);
     const uuid = uuidv4();
-    const doVote = await fetch(
-      "https://docs.google.com/forms/d/e/1FAIpQLSephR2KyAAyFKYTkTScIVjdaOVPEUCeKomqhiYBTwo22eKeuA/formResponse",
-      {
-        method: "POST",
-        body: new URLSearchParams({
-          "entry.1951820008": uuid,
-          "entry.1233176071": decision,
-          "entry.717131348": verity.schoolIdentity,
-        }),
+    const timestampHumanDate = new Date().toDateString();
+    const timestamp = new Date();
+
+    // connect with database
+    const database = client.db("dhsa-service");
+    try {
+      await client.connect();
+    } catch (err) {
+      res.status(500).json({
+        status: false,
+        error: "database connection error",
+        msg: err.toString(),
+      });
+    }
+
+    // doVote
+    try {
+      const collection = database.collection("votePresidentTickets");
+      const insertData = {
+        uuid: uuid,
+        decision: decision,
+        role: verity.schoolIdentity,
+        timestamp: timestamp,
+        timestampHumanDate: timestampHumanDate,
+      };
+      const doVote = await collection.insertOne(insertData);
+    } catch (err) {
+      res.status(500).json({
+        status: false,
+        error: "database error when inserting ticket infomation",
+        msg: err.toString(),
+      });
+    }
+
+    // doRecordUid
+    try {
+      const collection = database.collection("votePresidentHasVoted");
+      const insertData = {
+        uid: verity.uid,
+        timestamp: timestamp,
+        timestampHumanDate: timestampHumanDate,
+      };
+      const doRecordUid = await collection.insertOne(insertData);
+    } catch (err) {
+      res.status(500).json({
+        status: false,
+        error: "database error when inserting user information",
+        msg: err.toString(),
+      });
+    } finally {
+      await client.close();
+    }
+
+    const eventInfos = await fetch(process.env.HOST + "/vote/president")
+      .then((response) => response.json())
+      .then((response) => response);
+    let i = 0;
+    for (i = 0; i < eventInfos.options.length; i++) {
+      if (eventInfos.options[i].id == decision) {
+        break;
       }
-    );
-    const doRecordUid = await fetch(
-      "https://docs.google.com/forms/d/e/1FAIpQLSeJQVa88zE-dLpzBZohNvOk6pn9p1SSSiLIj2ChC5QHJNLiUA/formResponse",
-      {
-        method: "POST",
-        body: new URLSearchParams({
-          "entry.1612200948": verity.uid,
-        }),
-      }
-    );
-    if (doVote.status == 200) {
-      const eventInfos = await fetch(process.env.HOST + "/vote/president")
-        .then((response) => response.json())
-        .then((response) => response);
-      let i = 0;
-      for (i = 0; i < eventInfos.options.length; i++) {
-        if (eventInfos.options[i].id == decision) {
-          break;
-        }
-        // 找到 :id 在第幾個
-      }
-      if (i == eventInfos.options.length) {
-        res.status(417).json({ status: "option not found" });
-      } else {
-        res.status(200).json({
-          status: true,
-          event: eventInfos.event,
-          option: eventInfos.options[i],
-          stub_token: uuid,
-        });
-      }
+      // 找到 :id 在第幾個
+    }
+    if (i == eventInfos.options.length) {
+      res.status(417).json({ status: "option not found" });
     } else {
-      res
-        .status(doVote.status)
-        .json({ status: false, msg: "Form response error" });
+      res.status(200).json({
+        status: true,
+        event: eventInfos.event,
+        option: eventInfos.options[i],
+        stub_token: uuid,
+      });
     }
   }
 });
