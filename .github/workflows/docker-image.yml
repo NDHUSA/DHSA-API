@@ -36,4 +36,4 @@ jobs:
           # secrets: |
           #   "PRIVATE_REPO_TOKEN=${{ secrets.PRIVATE_REPO_TOKEN }}"
           build-args: |
-            GITHUB_REPO_TOKEN=${{ secrets.GITHUB_REPO_TOKEN }}
+            PRIVATE_REPO_TOKEN=${{ secrets.PRIVATE_REPO_TOKEN }}

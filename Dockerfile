@@ -1,6 +1,7 @@
 # Use the official lightweight Node.js 10 image.
 # https://hub.docker.com/_/node
 FROM node:18
+# FROM node:18
 # -slim
 
 # Create and change to the app directory.
@@ -15,10 +16,10 @@ RUN apt update && apt install tzdata -y
 ENV TZ="Asia/Taipei"
 
 # RUN --mount=type=secret,id=GITHUB_REPO_TOKEN
-ARG GITHUB_REPO_TOKEN
+ARG PRIVATE_REPO_TOKEN
 
-RUN npm install
-RUN npm install git+https://yc97463:$GITHUB_REPO_TOKEN@github.com/yc97463/DHSA-API-Private-Libs.git
+RUN npm install -g npm@9.6.2 && \ 
+  npm install git+https://yc97463:$PRIVATE_REPO_TOKEN@github.com/yc97463/DHSA-API-Private-Libs.git
 
 # Copy local code to the container image.
 COPY . .
