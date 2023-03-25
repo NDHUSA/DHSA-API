@@ -9,7 +9,7 @@ import card_router from "./routes/card.js";
 import vote_router from "./routes/vote/index.js";
 
 // Constants
-const PORT = 8080;
+const PORT = process.env.PORT;
 
 // App
 const app = express();
