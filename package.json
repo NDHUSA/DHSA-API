@@ -15,6 +15,7 @@
   "dependencies": {
     "axios": "^0.27.2",
     "cors": "^2.8.5",
+    "dhsa-api-private-libs": "github:yc97463/DHSA-API-Private-Libs",
     "dotenv": "^16.0.3",
     "express": "^4.18.1",
     "googleapis": "^108.0.0",
