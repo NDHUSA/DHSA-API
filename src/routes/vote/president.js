@@ -2,10 +2,12 @@ import express, { response } from "express";
 import fetch from "node-fetch";
 import { v4 as uuidv4 } from "uuid";
 import { MongoClient } from "mongodb";
+import dotenv from "dotenv";
 
 const app = express.Router();
-// const uri = "mongodb://" + process.env.MONGO_URI;
 
+dotenv.config();
+const uri = "mongodb://" + process.env.MONGODB_URI;
 const client = new MongoClient(uri);
 
 // Check User Status
