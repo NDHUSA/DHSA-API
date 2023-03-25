@@ -8,7 +8,10 @@ const app = express.Router();
 
 dotenv.config();
 const uri = "mongodb://" + process.env.MONGODB_URI;
-const client = new MongoClient(uri);
+const client = new MongoClient(uri, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+});
 
 // Check User Status
 app.get("/status", async (req, res) => {
