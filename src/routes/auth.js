@@ -3,7 +3,7 @@ import jwt from "jsonwebtoken";
 import url from "url";
 import fetch from "node-fetch";
 import { google } from "googleapis";
-import { ndhuLdapAuth } from "private-libs/src/ndhuLdapAuth.mjs";
+import { ndhuLdapAuth } from "dhsa-api-private-libs/src/ndhuLdapAuth.mjs";
 
 const app = express.Router();
 
