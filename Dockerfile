@@ -28,4 +28,4 @@ COPY . .
 
 # Run the web service on container startup.
 # CMD [ "npm", "run", "start" ]
-CMD ["pm2-runtime", "src/server.js"]
+CMD ["pm2-runtime", "src/server.js", "--no-daemon"]
