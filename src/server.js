@@ -24,11 +24,7 @@ app.use("/card", card_router);
 app.use("/vote", vote_router);
 app.use("/", router);
 
-app.get("*", (req, res) => {
-  res.status(404).json({ status: false, msg: "Route Not Found" });
-});
-
-app.post("*", (req, res) => {
+app.all("*", (req, res) => {
   res.status(404).json({ status: false, msg: "Route Not Found" });
 });
 
