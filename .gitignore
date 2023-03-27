@@ -3,5 +3,3 @@ sandbox/*
 .DS_Store
 .env
 src/libs/config.js
-rsync.sh
-deploy.sh
