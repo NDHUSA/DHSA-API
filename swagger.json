@@ -1,0 +1,21 @@
+{
+  "openapi": "3.0.2",
+  "info": {
+    "title": "NDHUSA API",
+    "description": "OpenAPI document for NDHUSA.",
+    "contact": {
+      "name": "NDHUSA IT Department",
+      "url": "https://dhsa.ndhu.edu.tw/p/412-1110-19552.php?Lang=zh-tw",
+      "email": "sa+it@ndhu.edu.tw"
+    },
+    "license": {
+      "name": "MIT",
+      "url": "https://github.com/NDHUSA/DHSA-API/blob/main/license"
+    },
+    "version": "2022.10.27"
+  },
+  "servers": [
+    { "url": "https://api.dhsa.ndhu.edu.tw" },
+    { "url": "https://preview.api.dhsa.dstw.dev" }
+  ]
+}

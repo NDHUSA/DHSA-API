@@ -8,6 +8,9 @@ import workflow_router from "./routes/workflow.js";
 import card_router from "./routes/card.js";
 import vote_router from "./routes/vote/index.js";
 
+import swaggerUi from "swagger-ui-express";
+import swaggerDocument from "../swagger.json" assert { type: "json" };
+
 // Constants
 const PORT = process.env.PORT;
 
@@ -22,6 +25,7 @@ app.use("/auth", auth_router);
 app.use("/workflow", workflow_router);
 app.use("/card", card_router);
 app.use("/vote", vote_router);
+app.use("/docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 app.use("/", router);
 
 app.all("*", (req, res) => {
