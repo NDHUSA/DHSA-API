@@ -8,19 +8,19 @@ app.get("/:pid", async (req, res) => {
   const { parse } = pkg;
   const pid = parseInt(req.params.pid);
   const rpageEndpoint = `https://dhsa.ndhu.edu.tw`;
-  const checkHTTPStatus = await fetch(
+  const rpagePostHTTPStatus = await fetch(
     `${rpageEndpoint}/p/427-1110-${pid}.php?Lang=zh-tw`,
     {
       method: "GET",
     }
   ).then((x) => x.status);
 
-  if (checkHTTPStatus != 200) {
+  if (rpagePostHTTPStatus != 200) {
     res
-      .status(checkHTTPStatus)
+      .status(rpagePostHTTPStatus)
       .json({ status: false, msg: "Something error." });
   } else {
-    let response = await parse(
+    const response = await parse(
       `${rpageEndpoint}/p/427-1110-${pid}.php?Lang=zh-tw`
     );
     res.status(200).json(response);
