@@ -23,7 +23,6 @@
     "md5": "^2.3.0",
     "mongodb": "^5.0.1",
     "node-fetch": "^3.2.10",
-    "swagger-ui-express": "^4.6.2",
     "url": "^0.11.0",
     "uuid": "^9.0.0"
   },
