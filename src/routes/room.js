@@ -2,6 +2,13 @@ import express from "express";
 
 const app = express.Router();
 
+app.get("/", async (req, res) => {
+  res.status(200).json([
+    { id: 1, name: "Room 1" },
+    { id: 2, name: "Room 2" },
+  ]);
+});
+
 app.get("/:roomId/open", async (req, res) => {
   const { roomId } = req.params;
   const { token } = req.headers;
