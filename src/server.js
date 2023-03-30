@@ -8,6 +8,7 @@ import workflow_router from "./routes/workflow.js";
 import card_router from "./routes/card.js";
 import vote_router from "./routes/vote/index.js";
 import announce_router from "./routes/announce.js";
+import room_router from "./routes/room.js";
 
 // Constants
 const PORT = process.env.PORT;
@@ -24,6 +25,7 @@ app.use("/workflow", workflow_router);
 app.use("/card", card_router);
 app.use("/vote", vote_router);
 app.use("/announce", announce_router);
+app.use("/room", room_router);
 app.use("/", router);
 
 app.all("*", (req, res) => {
