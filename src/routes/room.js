@@ -17,4 +17,10 @@ app.get("/:roomId/open", async (req, res) => {
   });
 });
 
+app.get("/:roomId/reservation", async (req, res) => {
+  const { roomId } = req.params;
+  const { from, to } = req.query;
+  res.status(200).json([{}]);
+});
+
 export default app;
