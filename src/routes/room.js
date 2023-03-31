@@ -84,4 +84,122 @@ app.patch("/:room_id", async (req, res) => {
   // res.status(404).json({ error: "The room is not found." });
 });
 
+app.get("/:room_id/reserve", async (req, res) => {
+  const { room_id } = req.params;
+  let { from, to } = req.query;
+
+  await client.connect();
+  const database = client.db("dhsa-service");
+  const collection = database.collection("room_reservation");
+  const cursor = collection.find({
+    room_id: room_id,
+    date: { $gte: new Date(from), $lt: new Date(to) },
+  });
+  const result = await cursor.toArray();
+  res.status(200).json(result);
+});
+
+app.post("/:room_id/reserve", async (req, res) => {
+  const { room_id } = req.params;
+  const { token } = req.headers;
+  const { date, time_slot_id, name, phone, event_name, org_name, note } =
+    req.body;
+  const timestamp = new Date();
+  /* 
+  借用人 from token
+  roomName from room_id 連結到 room table
+  */
+
+  const userInfo = await fetch(process.env.HOST + "/auth/token", {
+    method: "GET",
+    headers: {
+      token: token,
+    },
+  }).then((res) => res.json());
+
+  if (!userInfo.status) {
+    res.status(401).json({ error: "Unauthorized" });
+  } else {
+    await client.connect();
+    const database = client.db("dhsa-service");
+    const collection = database.collection("room_reservation");
+    const isReserved =
+      (await collection.countDocuments({
+        date: new Date(date),
+        time_slot_id: time_slot_id,
+        room_id: room_id,
+      })) > 0
+        ? true
+        : false;
+    if (isReserved) {
+      res.status(400).json({
+        status: false,
+        msg: `The room and target time is already reserved.`,
+      });
+    } else {
+      const insertData = {
+        date: new Date(date),
+        time_slot_id: time_slot_id,
+        room_id: room_id,
+        created_at: timestamp,
+        updated_at: timestamp,
+        event_name: event_name,
+        borrower: name,
+        phone: phone,
+        email: userInfo.email,
+        org_name: org_name,
+        note: note,
+        created_at: timestamp,
+        updated_at: timestamp,
+        review: {
+          approved: false,
+          approved_at: null,
+          approved_by: null,
+          approved_note: null,
+        },
+      };
+      try {
+        const result = await collection.insertOne(insertData);
+
+        res.status(200).json({
+          status: true,
+          msg: `The reservation has been created.\nPlease check your email when we review your application.`,
+        });
+      } catch (err) {
+        console.log(err);
+        res.status(500).json({ err: "database connection error" });
+      }
+    }
+  }
+});
+
+app.get("/:room_id/reserve/:reservation_id", async (req, res) => {
+  // exclude owner, security and IT, return public info
+});
+
+app.patch("/:room_id/reserve/:reservation_id", async (req, res) => {
+  const { room_id, reservation_id } = req.params;
+  const { token } = req.headers;
+  const { date, time_slot_id, phone, email, org, purpose, note } = req.body;
+  const updated_at = new Date();
+  // check user role, only security and it can do action
+});
+
+app.delete("/:room_id/reserve/:reservation_id", async (req, res) => {});
+
+app.get("/:room_id/unlock", async (req, res) => {
+  const { room_id } = req.params;
+  const { token } = req.headers;
+  function exp(days) {
+    return days * 24 * 60 * 60; // 1 Days
+  }
+  const expired_timestamp = Math.floor(new Date() / 1000) + exp(30 * 5); // n Days;
+  res.status(200).json({
+    status: true,
+    room_id: room_id,
+    access_expired_at: expired_timestamp,
+    msg: `The door ${room_id} has been opened.\nIt will expired at ${expired_timestamp}.`,
+  });
+});
+
 export default app;
