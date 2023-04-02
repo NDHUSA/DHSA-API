@@ -250,12 +250,10 @@ app.delete("/:room_id/reserve/:reservation_id", async (req, res) => {
       _id: new ObjectId(reservation_id),
     });
     if (result.deletedCount === 0) {
-      res
-        .status(404)
-        .json({
-          status: false,
-          msg: `The reservation ${reservation_id} is not found.`,
-        });
+      res.status(404).json({
+        status: false,
+        msg: `The reservation ${reservation_id} is not found.`,
+      });
     } else {
       res.status(200).json({
         status: true,
@@ -264,6 +262,45 @@ app.delete("/:room_id/reserve/:reservation_id", async (req, res) => {
     }
   } catch (err) {
     console.log(err);
+    res.status(500).json({ err: "database connection error" });
+  }
+});
+
+app.patch("/:room_id/review/:reservation_id", async (req, res) => {
+  const { room_id, reservation_id } = req.params;
+  const { token } = req.headers;
+  const { approved, approved_note } = req.body;
+  const timestamp = new Date();
+  // check user role, only security and it can do action
+
+  const userInfo = await fetch(process.env.HOST + "/auth/token", {
+    method: "GET",
+    headers: {
+      token: token,
+    },
+  }).then((res) => res.json());
+
+  await client.connect();
+  const database = client.db("dhsa-service");
+  const collection = database.collection("room_reservation");
+  const updateData = {
+    review: {
+      approved: approved,
+      approved_at: timestamp,
+      approved_by: userInfo.email,
+      approved_note: approved_note,
+    },
+  };
+  try {
+    const result = await collection.updateOne(
+      { _id: new ObjectId(reservation_id) },
+      { $set: updateData }
+    );
+    res.status(200).json({
+      status: true,
+      msg: `The reservation ${reservation_id} has been updated.`,
+    });
+  } catch (err) {
     res.status(500).json({ err: "database connection error" });
   }
 });
