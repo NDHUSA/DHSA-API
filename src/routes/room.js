@@ -158,8 +158,6 @@ app.post("/:room_id/reserve", async (req, res) => {
         email: userInfo.email,
         org_name: org_name,
         note: note,
-        created_at: timestamp,
-        updated_at: timestamp,
         review: {
           approved: false,
           approved_at: null,
