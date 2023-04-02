@@ -187,9 +187,52 @@ app.get("/:room_id/reserve/:reservation_id", async (req, res) => {
 app.patch("/:room_id/reserve/:reservation_id", async (req, res) => {
   const { room_id, reservation_id } = req.params;
   const { token } = req.headers;
-  const { date, time_slot_id, phone, email, org, purpose, note } = req.body;
+  const {
+    time_slot_id,
+    event_name,
+    borrower_name,
+    phone,
+    email,
+    org_name,
+    note,
+  } = req.body;
   const updated_at = new Date();
+  const timestamp = new Date();
   // check user role, only security and it can do action
+
+  await client.connect();
+  const database = client.db("dhsa-service");
+  const collection = database.collection("room_reservation");
+  const updateData = {
+    time_slot_id: time_slot_id,
+    updated_at: timestamp,
+    event_name: event_name,
+    borrower: borrower_name,
+    phone: phone,
+    email: email,
+    org_name: org_name,
+    note: note,
+    review: {
+      approved: false,
+      approved_at: null,
+      approved_by: null,
+      approved_note: null,
+    },
+  };
+  try {
+    const result = await collection.updateOne(
+      { _id: new ObjectId(reservation_id) },
+      { $set: updateData }
+    );
+    console.log(result);
+    res.status(200).json({
+      status: true,
+      msg: `The reservation ${reservation_id} has been updated.`,
+    });
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({ err: "database connection error" });
+  }
 });
 
 app.delete("/:room_id/reserve/:reservation_id", async (req, res) => {});
