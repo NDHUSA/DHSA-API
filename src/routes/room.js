@@ -236,7 +236,37 @@ app.patch("/:room_id/reserve/:reservation_id", async (req, res) => {
   }
 });
 
-app.delete("/:room_id/reserve/:reservation_id", async (req, res) => {});
+app.delete("/:room_id/reserve/:reservation_id", async (req, res) => {
+  const { room_id, reservation_id } = req.params;
+  const { token } = req.headers;
+  const timestamp = new Date();
+  // log deleted record
+
+  await client.connect();
+  const database = client.db("dhsa-service");
+  const collection = database.collection("room_reservation");
+  try {
+    const result = await collection.deleteOne({
+      _id: new ObjectId(reservation_id),
+    });
+    if (result.deletedCount === 0) {
+      res
+        .status(404)
+        .json({
+          status: false,
+          msg: `The reservation ${reservation_id} is not found.`,
+        });
+    } else {
+      res.status(200).json({
+        status: true,
+        msg: `The reservation ${reservation_id} has been deleted.`,
+      });
+    }
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({ err: "database connection error" });
+  }
+});
 
 app.get("/:room_id/unlock", async (req, res) => {
   const { room_id } = req.params;
