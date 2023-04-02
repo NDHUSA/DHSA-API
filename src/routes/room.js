@@ -51,6 +51,15 @@ app.post("/", async (req, res) => {
   }
 });
 
+app.get("/time-slot", async (req, res) => {
+  await client.connect();
+  const database = client.db("dhsa-service");
+  const collection = database.collection("room_time_slot");
+  const cursor = collection.find({});
+  const result = await cursor.toArray();
+  res.status(200).json(result);
+});
+
 app.patch("/:room_id", async (req, res) => {
   const { room_id } = req.params;
   const { token } = req.headers;
