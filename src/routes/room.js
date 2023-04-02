@@ -95,7 +95,7 @@ app.patch("/:room_id", async (req, res) => {
 
 app.get("/:room_id/reserve", async (req, res) => {
   const { room_id } = req.params;
-  let { from, to } = req.query;
+  let { from, to, time_slot } = req.query;
 
   await client.connect();
   const database = client.db("dhsa-service");
@@ -103,6 +103,7 @@ app.get("/:room_id/reserve", async (req, res) => {
   const cursor = collection.find({
     room_id: room_id,
     date: { $gte: new Date(from), $lt: new Date(to) },
+    // time_slot_id: time_slot,
   });
   const result = await cursor.toArray();
   res.status(200).json(result);
