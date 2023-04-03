@@ -171,7 +171,7 @@ app.post("/:room_id/reserve", async (req, res) => {
 
         res.status(200).json({
           status: true,
-          msg: `The reservation has been created.\nPlease check your email when we review your application.`,
+          msg: `The reservation has been created.\nYou will get an email when we review your application.`,
         });
       } catch (err) {
         console.log(err);
