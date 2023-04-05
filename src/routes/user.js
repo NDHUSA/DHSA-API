@@ -89,4 +89,41 @@ app.get("/me", async (req, res) => {
   res.status(200).json(result);
 });
 
+app.patch("/ndhu-role", async (req, res) => {
+  const { token } = req.headers;
+
+  const ndhu_role = await fetch(
+    "https://preview.api.dhsa.dstw.dev" + "/auth/ndhuLDAP",
+    {
+      headers: { token: token },
+    }
+  ).then((x) => x.json());
+  const userInfo = await fetch(process.env.HOST + "/auth/token", {
+    headers: { token: token },
+  }).then((x) => x.json());
+  const timestamp = new Date();
+
+  await client.connect();
+  const database = client.db("dhsa-service");
+  const collection = database.collection("users");
+  const updateData = {
+    updated_at: timestamp,
+    ndhu_role: ndhu_role.role,
+  };
+  try {
+    const result = await collection.updateOne(
+      { _id: new ObjectId(userInfo.user_oid) },
+      {
+        $set: updateData,
+      }
+    );
+    res.status(200).json({
+      status: true,
+      msg: `The user ${userInfo.name} ${userInfo.email}'s school role has been updated.`,
+    });
+  } catch (err) {
+    res.status(500).json({ err: "database connection error" });
+  }
+});
+
 export default app;
