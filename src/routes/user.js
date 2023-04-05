@@ -18,6 +18,7 @@ app.get("/me", async (req, res) => {
       token: token,
     },
   }).then((x) => x.json());
+
   if (!userInfo.status) {
     res.status(401).json({ status: false, msg: "Invalid token." });
     return;
@@ -37,7 +38,7 @@ app.get("/me", async (req, res) => {
   if (isMember) {
     const result = await collection.findOne(
       {
-        _id: new ObjectId(userInfo.user_oid),
+        email: userInfo.email,
       },
       { projection: { enabled: 0, note: 0, created_at: 0, updated_at: 0 } }
     );
@@ -61,10 +62,14 @@ app.get("/me", async (req, res) => {
     };
     try {
       const result = await collection.insertOne(insertData);
-      res.status(200).json({
-        status: true,
-        msg: `The user ${userInfo.name} has been created.`,
-      });
+      const result_query = await collection.findOne(
+        {
+          _id: new ObjectId(userInfo.user_oid),
+        },
+        { projection: { enabled: 0, note: 0, created_at: 0, updated_at: 0 } }
+      );
+
+      res.status(200).json(result_query);
     } catch (err) {
       console.log(err);
       res.status(500).json({ err: "database connection error" });
