@@ -111,33 +111,36 @@ app.post("/token", async (req, res) => {
   } else {
     const { hd, email, name, picture } = req.body;
 
-    await client.connect();
-    const database = client.db("dhsa-service");
-    const collection = database.collection("users");
-    const result = await collection.findOne({
-      email: req.body.email.toLowerCase(),
-    });
-    const user_oid = result === null ? null : result._id.toString();
+    const token_for_check_status = jwt.sign(
+      JSON.stringify({
+        status: true,
+        iss: process.env.HOST,
+        iat: Math.floor(Date.now() / 1000),
+        exp: Math.floor(Date.now() / 1000) + exp(1 / 24 / 2), // n Days
+        email: email.toLowerCase(),
+        name: name,
+        avatar: picture,
+      }),
+      process.env.JWT_SIGNATURE
+    );
+    const userInfo = await fetch(process.env.HOST + "/user/me", {
+      headers: {
+        token: token_for_check_status,
+      },
+    }).then((x) => x.json());
 
     const data = JSON.stringify({
       iss: process.env.HOST,
       iat: Math.floor(Date.now() / 1000),
       exp: Math.floor(Date.now() / 1000) + exp(30 * 5), // n Days
-      email: email.toLowerCase(),
-      hd: email.split("@")[1].toLowerCase(),
-      name: name,
-      avatar: picture,
-      user_oid: user_oid,
+      email: userInfo.email,
+      hd: userInfo.email.split("@")[1].toLowerCase(),
+      name: userInfo.name,
+      avatar: userInfo.avatar,
+      user_oid: userInfo._oid,
     });
     const token = jwt.sign(data, process.env.JWT_SIGNATURE);
-    const userStatus = await fetch(process.env.HOST + "/user/status", {
-      headers: {
-        token: token,
-      },
-    }).then((x) => x.json());
-    res
-      .status(200)
-      .json({ status: true, token: token, userStatus: userStatus });
+    res.status(200).json({ status: true, token: token });
   }
 });
 
