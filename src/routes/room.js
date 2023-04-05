@@ -26,6 +26,17 @@ app.post("/", async (req, res) => {
   const { name, description, color, enable } = req.body;
   const timestamp = new Date();
 
+  const userInfo = await fetch(process.env.HOST + "/user/me", {
+    headers: {
+      token: token,
+    },
+  }).then((x) => x.json());
+
+  if (userInfo.sa_role === null) {
+    res.status(401).json({ status: false, msg: "Permission denied." });
+    return;
+  }
+
   await client.connect();
   const database = client.db("dhsa-service");
   const collection = database.collection("room_list");
