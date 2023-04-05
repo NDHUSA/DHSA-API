@@ -4,6 +4,7 @@ import dotenv from "dotenv";
 
 import router from "./routes/index.js";
 import auth_router from "./routes/auth.js";
+import user_router from "./routes/user.js";
 import workflow_router from "./routes/workflow.js";
 import card_router from "./routes/card.js";
 import vote_router from "./routes/vote/index.js";
@@ -21,6 +22,7 @@ dotenv.config();
 app.use(cors());
 app.use(express.json());
 app.use("/auth", auth_router);
+app.use("/user", user_router);
 app.use("/workflow", workflow_router);
 app.use("/card", card_router);
 app.use("/vote", vote_router);
