@@ -18,7 +18,7 @@ app.get("/status", async (req, res) => {
   const { token } = req.headers;
 
   // Auth User Toekn
-  const verityToken = await fetch(process.env.HOST + "/auth/token", {
+  const verityToken = await fetch(process.env.HOST + "/user/me", {
     headers: { token: token },
   }).then((response) => response.json());
 
