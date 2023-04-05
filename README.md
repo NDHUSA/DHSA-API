@@ -14,8 +14,8 @@ npm run dev
 
 ```bash
 # Pull Docker Image
-docker pull ndhusa/dhsa-api
+docker pull ndhusa/dhsa-api:main
 
 # Run Docker Image
-docker run dhsa-api
+docker run dhsa-api:main
 ```
