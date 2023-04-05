@@ -5,7 +5,17 @@ import fetch from "node-fetch";
 import { google } from "googleapis";
 import { ndhuLdapAuth } from "dhsa-api-private-libs/src/ndhuLdapAuth.mjs";
 
+import dotenv from "dotenv";
+import { MongoClient } from "mongodb";
+
 const app = express.Router();
+
+dotenv.config();
+const uri = "mongodb://" + process.env.MONGODB_URI;
+const client = new MongoClient(uri, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+});
 
 app.get("/google", async (req, res) => {
   const queryObject = url.parse(req.url, true).query;
@@ -100,6 +110,15 @@ app.post("/token", async (req, res) => {
     res.status(401).json({ status: false, msg: "Invalid Authorization" });
   } else {
     const { hd, email, name, picture } = req.body;
+
+    await client.connect();
+    const database = client.db("dhsa-service");
+    const collection = database.collection("users");
+    const result = await collection.findOne({
+      email: req.body.email.toLowerCase(),
+    });
+    const user_oid = result === null ? null : result._id.toString();
+
     const data = JSON.stringify({
       iss: process.env.HOST,
       iat: Math.floor(Date.now() / 1000),
@@ -108,7 +127,7 @@ app.post("/token", async (req, res) => {
       hd: email.split("@")[1].toLowerCase(),
       name: name,
       avatar: picture,
-      role: "", // TODO: Add Role
+      user_oid: user_oid,
     });
     const token = jwt.sign(data, process.env.JWT_SIGNATURE);
     const userStatus = await fetch(process.env.HOST + "/user/status", {
