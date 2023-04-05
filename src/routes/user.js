@@ -119,6 +119,7 @@ app.patch("/ndhu-role", async (req, res) => {
     );
     res.status(200).json({
       status: true,
+      role: ndhu_role.role,
       msg: `The user ${userInfo.name} ${userInfo.email}'s school role has been updated.`,
     });
   } catch (err) {
