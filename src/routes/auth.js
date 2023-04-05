@@ -91,7 +91,7 @@ app.get("/token", (req, res) => {
   });
 });
 
-app.post("/token", (req, res) => {
+app.post("/token", async (req, res) => {
   function exp(days) {
     return days * 24 * 60 * 60; // 1 Days
   }
@@ -108,9 +108,17 @@ app.post("/token", (req, res) => {
       hd: email.split("@")[1].toLowerCase(),
       name: name,
       avatar: picture,
+      role: "", // TODO: Add Role
     });
     const token = jwt.sign(data, process.env.JWT_SIGNATURE);
-    res.status(200).json({ status: true, token: token });
+    const userStatus = await fetch(process.env.HOST + "/user/status", {
+      headers: {
+        token: token,
+      },
+    }).then((x) => x.json());
+    res
+      .status(200)
+      .json({ status: true, token: token, userStatus: userStatus });
   }
 });
 
