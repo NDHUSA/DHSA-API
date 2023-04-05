@@ -31,8 +31,7 @@ app.post("/", async (req, res) => {
       token: token,
     },
   }).then((x) => x.json());
-
-  if (userInfo.sa_role === null) {
+  if (userInfo.sa_role == null) {
     res.status(401).json({ status: false, msg: "Permission denied." });
     return;
   }
@@ -76,6 +75,16 @@ app.patch("/:room_id", async (req, res) => {
   const { token } = req.headers;
   const { name, description, color, enable } = req.body;
   const timestamp = new Date();
+
+  const userInfo = await fetch(process.env.HOST + "/user/me", {
+    headers: {
+      token: token,
+    },
+  }).then((x) => x.json());
+  if (userInfo.sa_role == null) {
+    res.status(401).json({ status: false, msg: "Permission denied." });
+    return;
+  }
 
   await client.connect();
   const database = client.db("dhsa-service");
@@ -126,68 +135,63 @@ app.post("/:room_id/reserve", async (req, res) => {
   const { date, time_slot_id, name, phone, event_name, org_name, note } =
     req.body;
   const timestamp = new Date();
-  /* 
-  借用人 from token
-  roomName from room_id 連結到 room table
-  */
 
-  const userInfo = await fetch(process.env.HOST + "/auth/token", {
-    method: "GET",
+  const userInfo = await fetch(process.env.HOST + "/user/me", {
     headers: {
       token: token,
     },
   }).then((res) => res.json());
-
-  if (!userInfo.status) {
+  if (userInfo._id == null) {
     res.status(401).json({ error: "Unauthorized" });
-  } else {
-    await client.connect();
-    const database = client.db("dhsa-service");
-    const collection = database.collection("room_reservation");
-    const isReserved =
-      (await collection.countDocuments({
-        date: new Date(date),
-        time_slot_id: time_slot_id,
-        room_id: room_id,
-      })) > 0
-        ? true
-        : false;
-    if (isReserved) {
-      res.status(400).json({
-        status: false,
-        msg: `The room and target time is already reserved.`,
-      });
-    } else {
-      const insertData = {
-        date: new Date(date),
-        time_slot_id: time_slot_id,
-        room_id: room_id,
-        created_at: timestamp,
-        updated_at: timestamp,
-        event_name: event_name,
-        borrower: name,
-        phone: phone,
-        email: userInfo.email,
-        org_name: org_name,
-        note: note,
-        review: {
-          approved: false,
-          approved_at: null,
-          approved_by: null,
-          approved_note: null,
-        },
-      };
-      try {
-        const result = await collection.insertOne(insertData);
+    return;
+  }
 
-        res.status(200).json({
-          status: true,
-          msg: `The reservation has been created.\nYou will get an email when we review your application.`,
-        });
-      } catch (err) {
-        console.log(err);
-        res.status(500).json({ err: "database connection error" });
-      }
+  await client.connect();
+  const database = client.db("dhsa-service");
+  const collection = database.collection("room_reservation");
+  const isReserved =
+    (await collection.countDocuments({
+      date: new Date(date),
+      time_slot_id: time_slot_id,
+      room_id: room_id,
+    })) > 0
+      ? true
+      : false;
+  if (isReserved) {
+    res.status(400).json({
+      status: false,
+      msg: `The room and target time is already reserved.`,
+    });
+  } else {
+    const insertData = {
+      date: new Date(date),
+      time_slot_id: time_slot_id,
+      room_id: room_id,
+      created_at: timestamp,
+      updated_at: timestamp,
+      event_name: event_name,
+      borrower: name,
+      phone: phone,
+      email: userInfo.email,
+      org_name: org_name,
+      note: note,
+      review: {
+        approved: false,
+        approved_at: null,
+        approved_by: null,
+        approved_note: null,
+      },
+    };
+    try {
+      const result = await collection.insertOne(insertData);
+
+      res.status(200).json({
+        status: true,
+        msg: `The reservation has been created.\nYou will get an email when we review your application.`,
+      });
+    } catch (err) {
+      console.log(err);
+      res.status(500).json({ err: "database connection error" });
     }
   }
 });
@@ -210,7 +214,16 @@ app.patch("/:room_id/reserve/:reservation_id", async (req, res) => {
   } = req.body;
   const updated_at = new Date();
   const timestamp = new Date();
-  // check user role, only security and it can do action
+
+  const userInfo = await fetch(process.env.HOST + "/user/me", {
+    headers: {
+      token: token,
+    },
+  }).then((x) => x.json());
+  if (userInfo.sa_role == null) {
+    res.status(401).json({ status: false, msg: "Permission denied." });
+    return;
+  }
 
   await client.connect();
   const database = client.db("dhsa-service");
@@ -253,6 +266,16 @@ app.delete("/:room_id/reserve/:reservation_id", async (req, res) => {
   const timestamp = new Date();
   // log deleted record
 
+  const userInfo = await fetch(process.env.HOST + "/user/me", {
+    headers: {
+      token: token,
+    },
+  }).then((x) => x.json());
+  if (userInfo.sa_role == null) {
+    res.status(401).json({ status: false, msg: "Permission denied." });
+    return;
+  }
+
   await client.connect();
   const database = client.db("dhsa-service");
   const collection = database.collection("room_reservation");
@@ -284,11 +307,15 @@ app.patch("/:room_id/review/:reservation_id", async (req, res) => {
   const timestamp = new Date();
   // check user role, only security and it can do action
 
-  const userInfo = await fetch(process.env.HOST + "/auth/token", {
+  const userInfo = await fetch(process.env.HOST + "/user/me", {
     headers: {
       token: token,
     },
-  }).then((res) => res.json());
+  }).then((x) => x.json());
+  if (userInfo.sa_role == null) {
+    res.status(401).json({ status: false, msg: "Permission denied." });
+    return;
+  }
 
   await client.connect();
   const database = client.db("dhsa-service");
