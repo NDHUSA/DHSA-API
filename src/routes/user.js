@@ -64,7 +64,7 @@ app.get("/me", async (req, res) => {
       const result = await collection.insertOne(insertData);
       const result_query = await collection.findOne(
         {
-          _id: new ObjectId(userInfo.user_oid),
+          email: userInfo.email,
         },
         { projection: { enabled: 0, note: 0, created_at: 0, updated_at: 0 } }
       );
