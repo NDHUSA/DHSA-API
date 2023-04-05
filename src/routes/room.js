@@ -274,7 +274,6 @@ app.patch("/:room_id/review/:reservation_id", async (req, res) => {
   // check user role, only security and it can do action
 
   const userInfo = await fetch(process.env.HOST + "/auth/token", {
-    method: "GET",
     headers: {
       token: token,
     },
