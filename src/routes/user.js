@@ -64,4 +64,29 @@ app.get("/status", async (req, res) => {
   }
 });
 
+app.get("/me", async (req, res) => {
+  const { token } = req.headers;
+  const userInfo = await fetch(process.env.HOST + "/auth/token", {
+    headers: {
+      token: token,
+    },
+  }).then((x) => x.json());
+  if (!userInfo.status) {
+    res.status(401).json({ status: false, msg: "Invalid token." });
+    return;
+  }
+
+  await client.connect();
+  const database = client.db("dhsa-service");
+  const collection = database.collection("users");
+  const result = await collection.findOne(
+    {
+      _id: new ObjectId(userInfo.user_oid),
+    },
+    { projection: { enabled: 0, note: 0, created_at: 0, updated_at: 0 } }
+  );
+  // const result = await cursor.toArray();
+  res.status(200).json(result);
+});
+
 export default app;
