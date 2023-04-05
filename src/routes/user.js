@@ -85,7 +85,7 @@ app.get("/me", async (req, res) => {
     },
     { projection: { enabled: 0, note: 0, created_at: 0, updated_at: 0 } }
   );
-  // const result = await cursor.toArray();
+
   res.status(200).json(result);
 });
 
