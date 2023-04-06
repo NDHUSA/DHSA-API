@@ -86,7 +86,7 @@ app.patch("/ndhu-role", async (req, res) => {
       headers: { token: token },
     }
   ).then((x) => x.json());
-  const userInfo = await fetch(process.env.HOST + "/auth/token", {
+  const userInfo = await fetch(process.env.HOST + "/user/me", {
     headers: { token: token },
   }).then((x) => x.json());
   const timestamp = new Date();
@@ -100,7 +100,7 @@ app.patch("/ndhu-role", async (req, res) => {
   };
   try {
     const result = await collection.updateOne(
-      { _id: new ObjectId(userInfo.user_oid) },
+      { _id: new ObjectId(userInfo._id) },
       {
         $set: updateData,
       }
