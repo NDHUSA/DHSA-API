@@ -149,14 +149,31 @@ app.post("/:room_id/reserve", async (req, res) => {
   await client.connect();
   const database = client.db("dhsa-service");
   const collection = database.collection("room_reservation");
-  const isReserved =
-    (await collection.countDocuments({
-      date: new Date(date),
-      time_slot_id: time_slot_id,
-      room_id: room_id,
-    })) > 0
-      ? true
-      : false;
+  // find approved is null and true -> isReserved = true
+  // const isReserved =
+  //   (await collection.countDocuments({
+  //     date: new Date(date),
+  //     time_slot_id: time_slot_id,
+  //     room_id: room_id,
+  //     review: {
+  //       approved: { $ne: false },
+  //     },
+  //   })) > 0
+  //     ? true
+  //     : false;
+
+  const cursor = await collection.countDocuments({
+    date: new Date(date),
+    time_slot_id: time_slot_id,
+    room_id: room_id,
+    review: {
+      approved: null,
+    },
+  });
+  console.log("\n", cursor);
+
+  const isReserved = cursor;
+
   if (isReserved) {
     res.status(400).json({
       status: false,
@@ -176,7 +193,7 @@ app.post("/:room_id/reserve", async (req, res) => {
       org_name: org_name,
       note: note,
       review: {
-        approved: false,
+        approved: null,
         approved_at: null,
         approved_by: null,
         approved_note: null,
@@ -193,6 +210,31 @@ app.post("/:room_id/reserve", async (req, res) => {
       console.log(err);
       res.status(500).json({ err: "database connection error" });
     }
+  }
+});
+
+app.delete("/reserve/all", async (req, res) => {
+  try {
+    await client.connect();
+    const database = client.db("dhsa-service");
+
+    // votePresidentTickets
+    const resultTickets = await database
+      .collection("room_reservation")
+      .deleteMany({});
+
+    res.status(200).json({
+      status: true,
+      msg: `Done! ${resultTickets.deletedCount} document(s) had been deleted this time.`,
+    });
+  } catch (err) {
+    res.status(500).json({
+      status: false,
+      error: "database connection error",
+      msg: err.toString(),
+    });
+  } finally {
+    await client.close();
   }
 });
 
