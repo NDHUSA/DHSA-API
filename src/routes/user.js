@@ -50,7 +50,9 @@ app.get("/me", async (req, res) => {
     userInfo.email.split("@")[1] == "gms.ndhu.edu.tw"
       ? await fetch(process.env.HOST + "/auth/ndhuLDAP", {
           headers: { token: token },
-        }).then((x) => x.json())
+        })
+          .then((x) => x.json())
+          .then((x) => x.role)
       : null;
 
   const timestamp = new Date();
@@ -62,7 +64,7 @@ app.get("/me", async (req, res) => {
     name: userInfo.name,
     avatar: userInfo.avatar,
     note: null,
-    ndhu_role: ndhu_role.role || null,
+    ndhu_role: ndhu_role || null,
     sa_role: null,
   };
   try {
