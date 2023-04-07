@@ -44,36 +44,40 @@ app.get("/me", async (req, res) => {
     );
 
     res.status(200).json(result);
-  } else {
-    const ndhu_role = await fetch(process.env.HOST + "/auth/ndhuLDAP", {
-      headers: { token: token },
-    }).then((x) => x.json());
-    const timestamp = new Date();
-    const insertData = {
-      created_at: timestamp,
-      updated_at: timestamp,
-      enabled: true,
-      email: userInfo.email,
-      name: userInfo.name,
-      avatar: userInfo.avatar,
-      note: null,
-      ndhu_role: ndhu_role.role || null,
-      sa_role: null,
-    };
-    try {
-      const result = await collection.insertOne(insertData);
-      const result_query = await collection.findOne(
-        {
-          email: userInfo.email,
-        },
-        { projection: { enabled: 0, note: 0, created_at: 0, updated_at: 0 } }
-      );
+    return;
+  }
+  const ndhu_role =
+    userInfo.email.split("@")[1] == "gms.ndhu.edu.tw"
+      ? await fetch(process.env.HOST + "/auth/ndhuLDAP", {
+          headers: { token: token },
+        }).then((x) => x.json())
+      : null;
 
-      res.status(200).json(result_query);
-    } catch (err) {
-      console.log(err);
-      res.status(500).json({ err: "database connection error" });
-    }
+  const timestamp = new Date();
+  const insertData = {
+    created_at: timestamp,
+    updated_at: timestamp,
+    enabled: true,
+    email: userInfo.email,
+    name: userInfo.name,
+    avatar: userInfo.avatar,
+    note: null,
+    ndhu_role: ndhu_role.role || null,
+    sa_role: null,
+  };
+  try {
+    const result = await collection.insertOne(insertData);
+    const result_query = await collection.findOne(
+      {
+        email: userInfo.email,
+      },
+      { projection: { enabled: 0, note: 0, created_at: 0, updated_at: 0 } }
+    );
+
+    res.status(200).json(result_query);
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({ err: "database connection error" });
   }
 });
 
