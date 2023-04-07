@@ -150,29 +150,17 @@ app.post("/:room_id/reserve", async (req, res) => {
   const database = client.db("dhsa-service");
   const collection = database.collection("room_reservation");
   // find approved is null and true -> isReserved = true
-  // const isReserved =
-  //   (await collection.countDocuments({
-  //     date: new Date(date),
-  //     time_slot_id: time_slot_id,
-  //     room_id: room_id,
-  //     review: {
-  //       approved: { $ne: false },
-  //     },
-  //   })) > 0
-  //     ? true
-  //     : false;
-
-  const cursor = await collection.countDocuments({
-    date: new Date(date),
-    time_slot_id: time_slot_id,
-    room_id: room_id,
-    review: {
-      approved: null,
-    },
-  });
-  console.log("\n", cursor);
-
-  const isReserved = cursor;
+  const isReserved =
+    (await collection.countDocuments({
+      date: new Date(date),
+      time_slot_id: time_slot_id,
+      room_id: room_id,
+      review: {
+        approved: { $ne: false },
+      },
+    })) > 0
+      ? true
+      : false;
 
   if (isReserved) {
     res.status(400).json({
