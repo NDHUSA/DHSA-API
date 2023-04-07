@@ -181,7 +181,7 @@ app.post("/:room_id/reserve", async (req, res) => {
       org_name: org_name,
       note: note,
       review: {
-        approved: null,
+        approved: false,
         approved_at: null,
         approved_by: null,
         approved_note: null,
@@ -198,31 +198,6 @@ app.post("/:room_id/reserve", async (req, res) => {
       console.log(err);
       res.status(500).json({ err: "database connection error" });
     }
-  }
-});
-
-app.delete("/reserve/all", async (req, res) => {
-  try {
-    await client.connect();
-    const database = client.db("dhsa-service");
-
-    // votePresidentTickets
-    const resultTickets = await database
-      .collection("room_reservation")
-      .deleteMany({});
-
-    res.status(200).json({
-      status: true,
-      msg: `Done! ${resultTickets.deletedCount} document(s) had been deleted this time.`,
-    });
-  } catch (err) {
-    res.status(500).json({
-      status: false,
-      error: "database connection error",
-      msg: err.toString(),
-    });
-  } finally {
-    await client.close();
   }
 });
 
