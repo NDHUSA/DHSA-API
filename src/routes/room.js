@@ -182,7 +182,6 @@ app.post("/:room_id/reserve", async (req, res) => {
       note: note,
       review: {
         approved: false,
-        approved: false,
         approved_at: null,
         approved_by: null,
         approved_note: null,
