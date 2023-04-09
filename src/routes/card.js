@@ -1,7 +1,16 @@
 import express from "express";
 import fetch from "node-fetch";
+import { MongoClient } from "mongodb";
+import dotenv from "dotenv";
 
 const app = express.Router();
+
+dotenv.config();
+const uri = "mongodb://" + process.env.MONGODB_URI;
+const client = new MongoClient(uri, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+});
 
 app.get("/store", async (req, res) => {
   const response = await fetch(process.env.CACHE + "/store.json");
@@ -10,14 +19,17 @@ app.get("/store", async (req, res) => {
 
 app.get("/membership/:uid", async (req, res) => {
   const uid = req.params.uid.toUpperCase();
-  try {
-    const response = await fetch(
-      process.env.CACHE + "/paying-member.json"
-    ).then((response) => response.json());
 
-    const isMember = response.find((response) => {
-      return uid == response.stuId;
-    });
+  await client.connect();
+  const database = client.db("dhsa-service");
+  const collection = database.collection("static_data");
+  const isMember = await collection.countDocuments({
+    name: "has_paied_membership",
+    value: { $elemMatch: { stuId: uid } },
+  });
+  await client.close();
+
+  try {
     if (isMember) {
       res.status(200).json({ status: true, uid: uid, membership: "會費會員" });
     } else {
