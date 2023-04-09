@@ -3,8 +3,7 @@ name: "Poke trigger for static content"
 on:
   push:
     branches: ["main", "dev"]
-  pull_request:
-    branches: ["main"]
+  workflow_dispatch:
   schedule:
     - cron: "* */2 * * 0"
 
@@ -18,7 +17,10 @@ jobs:
         with:
           node-version: 18
           cache: "npm"
+      - name: Node version
+        run: node -v
       - name: Install dependencies
-        run: npm ci
+        # run: npm ci
+        run: npm install node-fetch
       - name: Poke Trigger
-        run: node src/trigger/poke.js
+        run: node src/trigger/update-static-content.js
