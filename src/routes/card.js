@@ -13,8 +13,16 @@ const client = new MongoClient(uri, {
 });
 
 app.get("/store", async (req, res) => {
-  const response = await fetch(process.env.CACHE + "/store.json");
-  res.status(200).json(await response.json());
+  await client.connect();
+  const database = client.db("dhsa-service");
+  const collection = database.collection("static_data");
+  const partner_store = await collection
+    .findOne({
+      name: "partner_store",
+    })
+    .then((x) => x.value);
+  await client.close();
+  res.status(200).json(partner_store);
 });
 
 app.get("/membership/:uid", async (req, res) => {
