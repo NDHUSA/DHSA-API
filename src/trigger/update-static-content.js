@@ -8,7 +8,7 @@ try {
   const partner_store = await fetch(uri + "/card/store", {
     method: "PATCH",
   }).then((x) => x.json());
-  console.log("partner_store API reponse: " + partner_store);
+  console.log("partner_store API says: " + partner_store);
 } catch (err) {
   console.log("partner_store has some error: " + err);
 }
