@@ -21,8 +21,9 @@ jobs:
         run: node -v
       - name: Remove dependencies
         run: rm -rf package.json package-lock.json
+      - name: Move dependencies
+        run: mv src/trigger/package.json src/trigger/package-lock.json .
       - name: Install dependencies
-        # run: npm ci
-        run: npm install node-fetch
+        run: npm ci
       - name: Poke Trigger
         run: node src/trigger/update-static-content.js
