@@ -33,7 +33,5 @@ jobs:
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
-          # secrets: |
-          #   "PRIVATE_REPO_TOKEN=${{ secrets.PRIVATE_REPO_TOKEN }}"
           build-args: |
             PRIVATE_REPO_TOKEN=${{ secrets.PRIVATE_REPO_TOKEN }}
