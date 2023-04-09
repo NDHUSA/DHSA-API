@@ -1,0 +1,20 @@
+name: "Poke trigger for static content"
+
+on:
+  push:
+    branches: ["main", "dev"]
+  pull_request:
+    branches: ["main"]
+  schedule:
+    - cron: "30 * * * 0"
+
+jobs:
+  Pop:
+    name: Poke
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 16
+      - run: node src/trigger/update-static-content.js
