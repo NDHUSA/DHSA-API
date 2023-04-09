@@ -48,7 +48,7 @@ app.patch("/card/membership", async (req, res) => {
   const database = client.db("dhsa-service");
   const collection = database.collection("static_data");
   const file_id = await collection
-    .findOne({ name: "partner_store" })
+    .findOne({ name: "has_paid_membership" })
     .then((x) => x.GAS_FILE_ID);
 
   try {
