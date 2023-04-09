@@ -32,7 +32,7 @@ app.get("/membership/:uid", async (req, res) => {
   const database = client.db("dhsa-service");
   const collection = database.collection("static_data");
   const isMember = await collection.countDocuments({
-    name: "has_paied_membership",
+    name: "has_paid_membership",
     value: { $elemMatch: { stuId: uid } },
   });
   await client.close();

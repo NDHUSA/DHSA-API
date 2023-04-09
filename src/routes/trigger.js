@@ -59,7 +59,7 @@ app.patch("/card/membership", async (req, res) => {
     const timestamp = new Date();
 
     await collection.updateOne(
-      { name: "has_paied_membership" },
+      { name: "has_paid_membership" },
       { $set: { updated_at: timestamp, value: resp } }
     );
     await client.close();
