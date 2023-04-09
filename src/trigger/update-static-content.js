@@ -3,7 +3,7 @@ import fetch from "node-fetch";
 const uri = "https://preview.api.dhsa.dstw.dev/trigger";
 console.log("URI: " + uri);
 
-const routes = ["/card/store", "/card/membership"];
+const routes = ["/card/store", "/card/membership", "/poem"];
 
 for (let i = 0; i < routes.length; i++) {
   try {
