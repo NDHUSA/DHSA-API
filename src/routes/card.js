@@ -33,7 +33,7 @@ app.get("/membership/:uid", async (req, res) => {
   const collection = database.collection("static_data");
   const isMember = await collection.countDocuments({
     name: "has_paid_membership",
-    value: { $elemMatch: { stuId: uid } },
+    value: { $elemMatch: { id: uid } },
   });
   await client.close();
 
