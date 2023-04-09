@@ -17,4 +17,5 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: 18
+      - run: npm install node-fetch
       - run: node src/trigger/update-static-content.js
