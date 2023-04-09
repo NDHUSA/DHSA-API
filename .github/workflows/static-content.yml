@@ -19,6 +19,8 @@ jobs:
           cache: "npm"
       - name: Node version
         run: node -v
+      - name: Remove dependencies
+        run: rm -rf package.json package-lock.json
       - name: Install dependencies
         # run: npm ci
         run: npm install node-fetch
