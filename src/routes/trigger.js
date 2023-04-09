@@ -18,7 +18,7 @@ async function doUpdate(table_name, req, res) {
   const collection = database.collection("static_data");
   const file_id = await collection
     .findOne({ name: table_name })
-    .then((x) => x.GAS_FILE_ID);
+    .then((x) => x.GAS_DEPLOY_ID);
 
   try {
     const resp = await fetch(
