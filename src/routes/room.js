@@ -205,6 +205,41 @@ app.get("/:room_id/reserve/:reservation_id", async (req, res) => {
   // exclude owner, security and IT, return public info
 });
 
+app.delete("/reserve/all", async (req, res) => {
+  const { token } = req.headers;
+  const userInfo = await fetch(process.env.HOST + "/user/me", {
+    headers: {
+      token: token,
+    },
+  }).then((res) => res.json());
+  if (userInfo.sa_role == null) {
+    res.status(401).json({ status: false, msg: "Permission denied." });
+    return;
+  }
+
+  try {
+    await client.connect();
+    const database = client.db("dhsa-service");
+
+    const resultTickets = await database
+      .collection("room_reservation")
+      .deleteMany({});
+
+    res.status(200).json({
+      status: true,
+      msg: `Done! ${resultTickets.deletedCount} document(s) had been deleted this time.`,
+    });
+  } catch (err) {
+    res.status(500).json({
+      status: false,
+      error: "database connection error",
+      msg: err.toString(),
+    });
+  } finally {
+    await client.close();
+  }
+});
+
 app.patch("/:room_id/reserve/:reservation_id", async (req, res) => {
   const { room_id, reservation_id } = req.params;
   const { token } = req.headers;
