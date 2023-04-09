@@ -50,7 +50,8 @@ app.patch("/card/membership", async (req, res) => {
   await doUpdate("has_paid_membership", req, res);
 });
 
-
+app.patch("/poem", async (req, res) => {
+  await doUpdate("poem", req, res);
 });
 
 export default app;
