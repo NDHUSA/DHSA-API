@@ -3,26 +3,19 @@ import fetch from "node-fetch";
 const uri = "https://preview.api.dhsa.dstw.dev/trigger";
 console.log("URI: " + uri);
 
-try {
-  console.log("start to poke partner_store");
-  const partner_store = await fetch(uri + "/card/store", {
-    method: "PATCH",
-  }).then((x) => x.json());
-  console.log("partner_store API says: " + JSON.stringify(partner_store));
-} catch (err) {
-  console.log("partner_store has some error: " + err);
+const routes = ["/card/store", "/card/membership"];
+
+for (let i = 0; i < routes.length; i++) {
+  try {
+    console.log("\n[#" + (i + 1) + "]");
+    console.log(`start to poke ${routes[i]}`);
+    let resp = await fetch(uri + routes[i], {
+      method: "PATCH",
+    }).then((x) => x.json());
+    console.log(`${routes[i]} says: ` + JSON.stringify(resp));
+  } catch (err) {
+    console.log(`${routes[i]} occurred some error: ` + err);
+  }
 }
 
-try {
-  console.log("start to poke has_paid_membership");
-  const has_paid_membership = await fetch(uri + "/card/membership", {
-    method: "PATCH",
-  }).then((x) => x.json());
-  console.log(
-    "has_paid_membership API says: " + JSON.stringify(has_paid_membership)
-  );
-} catch (err) {
-  console.log("has_paid_membership has some error: " + err);
-}
-
-console.log("All done!");
+console.log("\nAll done!");
