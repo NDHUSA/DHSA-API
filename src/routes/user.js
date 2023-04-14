@@ -61,7 +61,7 @@ app.get("/me", async (req, res) => {
     .then((x) => (x.membership == "會費會員" ? true : false));
 
   const paid_member_list = database.collection("static_data");
-  const paid_member_name = isPaidMember
+  const user_name = isPaidMember
     ? await paid_member_list
         .findOne({
           name: "has_paid_membership",
@@ -88,7 +88,7 @@ app.get("/me", async (req, res) => {
     updated_at: timestamp,
     enabled: true,
     email: userInfo.email,
-    name: paid_member_name,
+    name: user_name,
     avatar: userInfo.avatar,
     note: null,
     ndhu_role: ndhu_role || null,
