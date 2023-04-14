@@ -49,9 +49,33 @@ app.get("/me", async (req, res) => {
     res.status(200).json(result);
     return;
   }
+
+  // check user in paid_member_list
+
+  const isPaidMember = await fetch(
+    `http://0.0.0.0:${process.env.PORT}` +
+      "/card/membership/" +
+      userInfo.email.split("@")[0].toString()
+  )
+    .then((x) => x.json())
+    .then((x) => (x.membership == "會費會員" ? true : false));
+
+  const paid_member_list = database.collection("static_data");
+  const paid_member_name = isPaidMember
+    ? await paid_member_list
+        .findOne({
+          name: "has_paid_membership",
+        })
+        .then(
+          (x) =>
+            x.value.find((x) => x.id == userInfo.email.split("@")[0].toString())
+              .name
+        )
+    : userInfo.name;
+
   const ndhu_role =
     userInfo.email.split("@")[1] == "gms.ndhu.edu.tw"
-      ? await fetch(`http://0.0.0.0:${process.env.PORT}` + "/auth/ndhuLDAP", {
+      ? await fetch(`https://api.dhsa.ndhu.edu.tw` + "/auth/ndhuLDAP", {
           headers: { token: token },
         })
           .then((x) => x.json())
@@ -64,7 +88,7 @@ app.get("/me", async (req, res) => {
     updated_at: timestamp,
     enabled: true,
     email: userInfo.email,
-    name: userInfo.name,
+    name: paid_member_name,
     avatar: userInfo.avatar,
     note: null,
     ndhu_role: ndhu_role || null,
