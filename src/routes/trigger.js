@@ -42,15 +42,15 @@ async function doUpdate(table_name, req, res) {
   }
 }
 
-app.patch("/card/store", async (req, res) => {
+app.all("/card/store", async (req, res) => {
   await doUpdate("partner_store", req, res);
 });
 
-app.patch("/card/membership", async (req, res) => {
+app.all("/card/membership", async (req, res) => {
   await doUpdate("has_paid_membership", req, res);
 });
 
-app.patch("/poem", async (req, res) => {
+app.all("/poem", async (req, res) => {
   await doUpdate("poem", req, res);
 });
 
