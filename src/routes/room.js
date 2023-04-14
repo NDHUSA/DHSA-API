@@ -26,11 +26,14 @@ app.post("/", async (req, res) => {
   const { name, description, color, enable } = req.body;
   const timestamp = new Date();
 
-  const userInfo = await fetch(process.env.HOST + "/user/me", {
-    headers: {
-      token: token,
-    },
-  }).then((x) => x.json());
+  const userInfo = await fetch(
+    `http://0.0.0.0:${process.env.PORT}` + "/user/me",
+    {
+      headers: {
+        token: token,
+      },
+    }
+  ).then((x) => x.json());
   if (userInfo.sa_role == null) {
     res.status(401).json({ status: false, msg: "Permission denied." });
     return;
@@ -76,11 +79,14 @@ app.patch("/:room_id", async (req, res) => {
   const { name, description, color, enable } = req.body;
   const timestamp = new Date();
 
-  const userInfo = await fetch(process.env.HOST + "/user/me", {
-    headers: {
-      token: token,
-    },
-  }).then((x) => x.json());
+  const userInfo = await fetch(
+    `http://0.0.0.0:${process.env.PORT}` + "/user/me",
+    {
+      headers: {
+        token: token,
+      },
+    }
+  ).then((x) => x.json());
   if (userInfo.sa_role == null) {
     res.status(401).json({ status: false, msg: "Permission denied." });
     return;
@@ -136,11 +142,14 @@ app.post("/:room_id/reserve", async (req, res) => {
     req.body;
   const timestamp = new Date();
 
-  const userInfo = await fetch(process.env.HOST + "/user/me", {
-    headers: {
-      token: token,
-    },
-  }).then((res) => res.json());
+  const userInfo = await fetch(
+    `http://0.0.0.0:${process.env.PORT}` + "/user/me",
+    {
+      headers: {
+        token: token,
+      },
+    }
+  ).then((res) => res.json());
   if (userInfo._id == null) {
     res.status(401).json({ error: "Unauthorized" });
     return;
@@ -207,11 +216,14 @@ app.get("/:room_id/reserve/:reservation_id", async (req, res) => {
 
 app.delete("/reserve/all", async (req, res) => {
   const { token } = req.headers;
-  const userInfo = await fetch(process.env.HOST + "/user/me", {
-    headers: {
-      token: token,
-    },
-  }).then((res) => res.json());
+  const userInfo = await fetch(
+    `http://0.0.0.0:${process.env.PORT}` + "/user/me",
+    {
+      headers: {
+        token: token,
+      },
+    }
+  ).then((res) => res.json());
   if (userInfo.sa_role == null) {
     res.status(401).json({ status: false, msg: "Permission denied." });
     return;
@@ -255,11 +267,14 @@ app.patch("/:room_id/reserve/:reservation_id", async (req, res) => {
   const updated_at = new Date();
   const timestamp = new Date();
 
-  const userInfo = await fetch(process.env.HOST + "/user/me", {
-    headers: {
-      token: token,
-    },
-  }).then((x) => x.json());
+  const userInfo = await fetch(
+    `http://0.0.0.0:${process.env.PORT}` + "/user/me",
+    {
+      headers: {
+        token: token,
+      },
+    }
+  ).then((x) => x.json());
   if (userInfo.sa_role == null) {
     res.status(401).json({ status: false, msg: "Permission denied." });
     return;
@@ -306,11 +321,14 @@ app.delete("/:room_id/reserve/:reservation_id", async (req, res) => {
   const timestamp = new Date();
   // log deleted record
 
-  const userInfo = await fetch(process.env.HOST + "/user/me", {
-    headers: {
-      token: token,
-    },
-  }).then((x) => x.json());
+  const userInfo = await fetch(
+    `http://0.0.0.0:${process.env.PORT}` + "/user/me",
+    {
+      headers: {
+        token: token,
+      },
+    }
+  ).then((x) => x.json());
   if (userInfo.sa_role == null) {
     res.status(401).json({ status: false, msg: "Permission denied." });
     return;
@@ -347,11 +365,14 @@ app.patch("/:room_id/review/:reservation_id", async (req, res) => {
   const timestamp = new Date();
   // check user role, only security and it can do action
 
-  const userInfo = await fetch(process.env.HOST + "/user/me", {
-    headers: {
-      token: token,
-    },
-  }).then((x) => x.json());
+  const userInfo = await fetch(
+    `http://0.0.0.0:${process.env.PORT}` + "/user/me",
+    {
+      headers: {
+        token: token,
+      },
+    }
+  ).then((x) => x.json());
   if (userInfo.sa_role == null) {
     res.status(401).json({ status: false, msg: "Permission denied." });
     return;

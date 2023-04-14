@@ -50,14 +50,17 @@ app.get("/google", async (req, res) => {
       const response = await fetch(
         "https://oauth2.googleapis.com/tokeninfo?id_token=" + tokens.id_token
       ).then((response) => response.json());
-      const packJWT = await fetch(process.env.HOST + "/auth/token", {
-        method: "POST",
-        headers: {
-          Authorization: "Bearer " + process.env.tokenGenerator_authorization,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(response),
-      }).then((packJWT) => packJWT.json());
+      const packJWT = await fetch(
+        `http://0.0.0.0:${process.env.PORT}` + "/auth/token",
+        {
+          method: "POST",
+          headers: {
+            Authorization: "Bearer " + process.env.tokenGenerator_authorization,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(response),
+        }
+      ).then((packJWT) => packJWT.json());
       res.status(200).json(packJWT);
     } catch (err) {
       res.status(400).json({ status: false, msg: "Auth Error" });
@@ -67,10 +70,13 @@ app.get("/google", async (req, res) => {
 
 app.get("/ndhuLDAP", async (req, res) => {
   const { token } = req.headers;
-  const userInfo = await fetch(process.env.HOST + "/auth/token", {
-    method: "GET",
-    headers: { token: token },
-  }).then((response) => response.json());
+  const userInfo = await fetch(
+    `http://0.0.0.0:${process.env.PORT}` + "/auth/token",
+    {
+      method: "GET",
+      headers: { token: token },
+    }
+  ).then((response) => response.json());
   if (!userInfo.status) res.status(401).json(userInfo);
 
   try {
@@ -123,11 +129,14 @@ app.post("/token", async (req, res) => {
       }),
       process.env.JWT_SIGNATURE
     );
-    const userInfo = await fetch(process.env.HOST + "/user/me", {
-      headers: {
-        token: token_for_check_status,
-      },
-    }).then((x) => x.json());
+    const userInfo = await fetch(
+      `http://0.0.0.0:${process.env.PORT}` + "/user/me",
+      {
+        headers: {
+          token: token_for_check_status,
+        },
+      }
+    ).then((x) => x.json());
 
     const data = JSON.stringify({
       iss: process.env.HOST,

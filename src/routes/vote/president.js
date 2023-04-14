@@ -18,9 +18,12 @@ app.get("/status", async (req, res) => {
   const { token } = req.headers;
 
   // Auth User Toekn
-  const verityToken = await fetch(process.env.HOST + "/user/me", {
-    headers: { token: token },
-  }).then((response) => response.json());
+  const verityToken = await fetch(
+    `http://0.0.0.0:${process.env.PORT}` + "/user/me",
+    {
+      headers: { token: token },
+    }
+  ).then((response) => response.json());
 
   try {
     await client.connect();
@@ -179,9 +182,12 @@ app.delete("/", async (req, res) => {
 app.post("/", async (req, res) => {
   const { token } = req.headers;
   // Auth By /status
-  const verity = await fetch(process.env.HOST + "/vote/president/status", {
-    headers: { token: token },
-  }).then((response) => response.json());
+  const verity = await fetch(
+    `http://0.0.0.0:${process.env.PORT}` + "/vote/president/status",
+    {
+      headers: { token: token },
+    }
+  ).then((response) => response.json());
   if (!verity.status) {
     res
       .status(401)
@@ -242,7 +248,9 @@ app.post("/", async (req, res) => {
       await client.close();
     }
 
-    const eventInfos = await fetch(process.env.HOST + "/vote/president")
+    const eventInfos = await fetch(
+      `http://0.0.0.0:${process.env.PORT}` + "/vote/president"
+    )
       .then((response) => response.json())
       .then((response) => response);
     let i = 0;

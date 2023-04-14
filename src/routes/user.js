@@ -13,11 +13,14 @@ const client = new MongoClient(uri, {
 
 app.get("/me", async (req, res) => {
   const { token } = req.headers;
-  const userInfo = await fetch(process.env.HOST + "/auth/token", {
-    headers: {
-      token: token,
-    },
-  }).then((x) => x.json());
+  const userInfo = await fetch(
+    `http://0.0.0.0:${process.env.PORT}` + "/auth/token",
+    {
+      headers: {
+        token: token,
+      },
+    }
+  ).then((x) => x.json());
 
   if (!userInfo.status) {
     res.status(401).json({ status: false, msg: "Invalid token." });
@@ -48,7 +51,7 @@ app.get("/me", async (req, res) => {
   }
   const ndhu_role =
     userInfo.email.split("@")[1] == "gms.ndhu.edu.tw"
-      ? await fetch(process.env.HOST + "/auth/ndhuLDAP", {
+      ? await fetch(`http://0.0.0.0:${process.env.PORT}` + "/auth/ndhuLDAP", {
           headers: { token: token },
         })
           .then((x) => x.json())
@@ -92,9 +95,12 @@ app.patch("/ndhu-role", async (req, res) => {
       headers: { token: token },
     }
   ).then((x) => x.json());
-  const userInfo = await fetch(process.env.HOST + "/user/me", {
-    headers: { token: token },
-  }).then((x) => x.json());
+  const userInfo = await fetch(
+    `http://0.0.0.0:${process.env.PORT}` + "/user/me",
+    {
+      headers: { token: token },
+    }
+  ).then((x) => x.json());
   const timestamp = new Date();
 
   await client.connect();
