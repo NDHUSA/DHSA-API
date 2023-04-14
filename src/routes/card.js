@@ -16,13 +16,13 @@ app.get("/store", async (req, res) => {
   await client.connect();
   const database = client.db("dhsa-service");
   const collection = database.collection("static_data");
-  const partner_store = await collection
-    .findOne({
-      name: "partner_store",
-    })
-    .then((x) => x.value);
+  const partner_store = await collection.findOne({
+    name: "partner_store",
+  });
   await client.close();
-  res.status(200).json(partner_store);
+  res
+    .status(200)
+    .json({ updated_at: partner_store.updated_at, value: partner_store.value });
 });
 
 app.get("/membership/:uid", async (req, res) => {
