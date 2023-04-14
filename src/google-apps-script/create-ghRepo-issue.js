@@ -37,7 +37,7 @@ function onFormSubmit(e) {
     " |";
 
   var response = UrlFetchApp.fetch(
-    "https://api.dhsa.dstw.dev/workflow/github/issue",
+    "https://api.dhsa.ndhu.me/workflow/github/issue",
     {
       method: "POST",
       contentType: "application/json",

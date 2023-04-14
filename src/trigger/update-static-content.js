@@ -1,6 +1,6 @@
 import fetch from "node-fetch";
 
-const uri = "https://preview.api.dhsa.dstw.dev/trigger";
+const uri = "https://preview.api.dhsa.ndhu.me/trigger";
 console.log("URI: " + uri);
 
 const routes = ["/card/store", "/card/membership", "/poem"];

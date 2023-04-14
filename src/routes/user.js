@@ -90,7 +90,7 @@ app.patch("/ndhu-role", async (req, res) => {
   const { token } = req.headers;
 
   const ndhu_role = await fetch(
-    "https://preview.api.dhsa.dstw.dev" + "/auth/ndhuLDAP",
+    "https://preview.api.dhsa.ndhu.me" + "/auth/ndhuLDAP",
     {
       headers: { token: token },
     }

@@ -16,6 +16,6 @@
   },
   "servers": [
     { "url": "https://api.dhsa.ndhu.edu.tw" },
-    { "url": "https://preview.api.dhsa.dstw.dev" }
+    { "url": "https://preview.api.dhsa.ndhu.me" }
   ]
 }
