@@ -12,6 +12,7 @@ import vote_router from "./routes/vote/index.js";
 import announce_router from "./routes/announce.js";
 import room_router from "./routes/room.js";
 import poem_router from "./routes/poem.js";
+import checkin_router from "./routes/checkin.js";
 
 // Constants
 const PORT = process.env.PORT;
@@ -32,6 +33,7 @@ app.use("/vote", vote_router);
 app.use("/announce", announce_router);
 app.use("/room", room_router);
 app.use("/poem", poem_router);
+app.use("/checkin", checkin_router);
 app.use("/", router);
 
 app.all("*", (req, res) => {
