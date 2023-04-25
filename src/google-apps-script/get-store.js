@@ -26,13 +26,13 @@ function doGet(request) {
       ["type"]: data[8].toString(),
       ["thumb"]:
         hostPrefix +
-        (data[11].toString() ||
+        (data[12].toString() ||
           "/var/file/110/1110/img/4397/vipcard2021_merchant_image.png"),
       ["discount"]: {
         ["start"]: new Date(data[3]).getTime(),
         ["end"]: new Date(data[4]).getTime(),
         ["status"]: data[9].toString(),
-        ["contract"]: data[10].toString(),
+        ["content"]: data[10].toString(),
         ["note"]: data[11].toString(),
       },
       ["location"]: {
