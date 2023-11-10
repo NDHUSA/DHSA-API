@@ -7,7 +7,7 @@ import auth_router from "./routes/auth.js";
 import user_router from "./routes/user.js";
 import trigger_router from "./routes/trigger.js";
 import workflow_router from "./routes/workflow.js";
-import card_router from "./routes/card.js";
+import card_router from "./routes/card/index.js";
 import vote_router from "./routes/vote/index.js";
 import announce_router from "./routes/announce.js";
 import room_router from "./routes/room.js";
