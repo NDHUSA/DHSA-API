@@ -21,6 +21,7 @@ app.get("/all", async (req, res) => {
     res.status(401).json({
       status: false,
       msg: "Access token invalid",
+      access_token: access_token,
     });
     return;
   }
