@@ -13,7 +13,7 @@
   "author": "yc97463",
   "license": "MIT",
   "dependencies": {
-    "axios": "^0.27.2",
+    "axios": "^1.6.1",
     "cors": "^2.8.5",
     "dhsa-api-private-libs": "github:yc97463/DHSA-API-Private-Libs",
     "dotenv": "^16.0.3",
@@ -31,7 +31,7 @@
     "eslint": "^8.26.0",
     "eslint-config-google": "^0.14.0",
     "eslint-plugin-import": "^2.26.0",
-    "nodemon": "^2.0.20",
+    "nodemon": "^3.0.1",
     "prettier": "^2.7.1",
     "prettier-eslint": "^15.0.1"
   }
