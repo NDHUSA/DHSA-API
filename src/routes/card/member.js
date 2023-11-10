@@ -13,7 +13,7 @@ const client = new MongoClient(uri, {
 });
 
 // Check User Status
-app.get("/all", async (req, res) => {
+app.get("/all", async (req, res, next) => {
   const { access_token } = req.headers;
 
   // Auth Access Toekn
@@ -21,9 +21,9 @@ app.get("/all", async (req, res) => {
     res.status(401).json({
       status: false,
       msg: "Access token invalid",
-      access_token: access_token,
+      access_token: access_token || "null",
     });
-    return;
+    next();
   }
 
   try {
