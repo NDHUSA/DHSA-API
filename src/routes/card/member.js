@@ -20,7 +20,7 @@ app.get("/all", async (req, res, next) => {
   if (access_token != process.env.CARD_MEMBER_ACCESS_TOKEN) {
     res.status(401).json({
       status: false,
-      msg: "Access token invalid",
+      msg: "Invalid access token",
       access_token: access_token || "null",
     });
     next();
