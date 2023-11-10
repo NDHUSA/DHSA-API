@@ -14,7 +14,7 @@ const client = new MongoClient(uri, {
 
 // Check User Status
 app.get("/all", async (req, res, next) => {
-  const { access_token } = req.headers;
+  const access_token = req.headers.access_token;
 
   // Auth Access Toekn
   if (access_token != process.env.CARD_MEMBER_ACCESS_TOKEN) {
@@ -32,7 +32,6 @@ app.get("/all", async (req, res, next) => {
     const collection = database.collection("users");
     const query = await collection.find({}).toArray();
     res.status(200).json(query);
-
   } catch (err) {
     res.status(500).json({
       status: false,
