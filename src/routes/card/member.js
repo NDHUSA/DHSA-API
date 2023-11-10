@@ -16,7 +16,7 @@ const client = new MongoClient(uri, {
 app.get("/all", async (req, res, next) => {
   const access_token = req.headers.access_token;
 
-  // Auth Access Toekn
+  // Auth Access Token
   if (access_token != process.env.CARD_MEMBER_ACCESS_TOKEN) {
     res.status(401).json({
       status: false,
