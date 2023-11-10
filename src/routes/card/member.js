@@ -1,5 +1,4 @@
 import express, { response } from "express";
-import fetch from "node-fetch";
 import { MongoClient } from "mongodb";
 import dotenv from "dotenv";
 
