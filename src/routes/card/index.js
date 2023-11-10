@@ -69,4 +69,6 @@ app.post("/membership/:uid", async (req, res) => {
   }
 });
 
+app.use("/member", member);
+
 export default app;
