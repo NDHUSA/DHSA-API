@@ -13,7 +13,7 @@ const client = new MongoClient(uri, {
 
 // Check User Status
 app.get("/all", async (req, res) => {
-  const access_token = req.headers.access_token;
+  const { access_token } = req.headers;
 
   // Auth Access Token
   if (access_token != process.env.CARD_MEMBER_ACCESS_TOKEN) {
