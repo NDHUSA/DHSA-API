@@ -13,7 +13,7 @@
   "author": "yc97463",
   "license": "MIT",
   "dependencies": {
-    "axios": "^1.6.1",
+    "axios": "^1.8.2",
     "cors": "^2.8.5",
     "dhsa-api-private-libs": "github:yc97463/DHSA-API-Private-Libs",
     "dotenv": "^16.0.3",
